@@ -1,0 +1,641 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="robots" content="noindex, nofollow">
+<title>Wedding Dashboard</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@500;600&family=Jost:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --ink: #3d3a37; --ink-soft: #6f6a64; --cream: #faf7f2; --blush: #f3e7e1;
+    --sage: #8a9b84; --sage-dark: #5f7059; --gold: #b7995c; --line: #e4dcd2;
+    --danger: #a05252; --serif: 'Cormorant Garamond', Georgia, serif; --sans: 'Jost', sans-serif;
+  }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body { font-family: var(--sans); font-weight: 300; color: var(--ink); background: var(--cream); line-height: 1.6; }
+  h1, h2, h3 { font-family: var(--serif); font-weight: 500; }
+
+  header.bar {
+    background: #fff; border-bottom: 1px solid var(--line);
+    padding: 0.9rem 1.5rem; display: flex; justify-content: space-between; align-items: center; gap: 1rem;
+    position: sticky; top: 0; z-index: 20;
+  }
+  header.bar h1 { font-size: 1.35rem; color: var(--sage-dark); }
+  header.bar .actions { display: flex; gap: 0.75rem; align-items: center; }
+  main { max-width: 1080px; margin: 0 auto; padding: 1.5rem; }
+
+  .tabs { display: flex; gap: 0.5rem; margin: 0.5rem 0 1.5rem; flex-wrap: wrap; }
+  .tabs button {
+    font-family: var(--sans); font-size: 0.85rem; letter-spacing: 0.12em; text-transform: uppercase;
+    padding: 0.6rem 1.4rem; border: 1px solid var(--line); border-radius: 999px;
+    background: #fff; color: var(--ink-soft); cursor: pointer;
+  }
+  .tabs button.active { background: var(--sage-dark); border-color: var(--sage-dark); color: #fff; }
+
+  .btn {
+    display: inline-block; border: 1px solid var(--sage-dark); color: var(--sage-dark); background: transparent;
+    padding: 0.5rem 1.3rem; letter-spacing: 0.1em; text-transform: uppercase; font-size: 0.78rem;
+    font-family: var(--sans); cursor: pointer; border-radius: 3px; text-decoration: none; transition: all .2s;
+  }
+  .btn:hover { background: var(--sage-dark); color: #fff; }
+  .btn.solid { background: var(--sage-dark); color: #fff; }
+  .btn.small { padding: 0.3rem 0.8rem; font-size: 0.72rem; }
+  .btn.danger { border-color: var(--danger); color: var(--danger); }
+  .btn.danger:hover { background: var(--danger); color: #fff; }
+  .btn:disabled { opacity: 0.5; cursor: wait; }
+
+  .card { background: #fff; border: 1px solid var(--line); border-radius: 8px; padding: 1.5rem; margin-bottom: 1.25rem; }
+  .muted { color: var(--ink-soft); font-size: 0.9rem; }
+
+  /* Login */
+  .login-wrap { max-width: 400px; margin: 8vh auto; }
+  .login-wrap h2 { text-align: center; margin-bottom: 0.35rem; color: var(--sage-dark); font-size: 1.8rem; }
+  .login-wrap p.muted { text-align: center; margin-bottom: 1.5rem; }
+
+  label { display: block; font-size: 0.8rem; letter-spacing: 0.08em; text-transform: uppercase; color: var(--ink-soft); margin-bottom: 0.3rem; }
+  input, select, textarea {
+    width: 100%; padding: 0.6rem 0.75rem; margin-bottom: 1rem;
+    border: 1px solid var(--line); border-radius: 4px;
+    font-family: var(--sans); font-size: 0.95rem; font-weight: 300; color: var(--ink); background: var(--cream);
+  }
+  input:focus, select:focus, textarea:focus { outline: 2px solid var(--sage); border-color: var(--sage); }
+  textarea { resize: vertical; }
+
+  .error-box, .ok-box { padding: 0.8rem 1rem; border-radius: 6px; font-size: 0.9rem; margin-bottom: 1rem; display: none; }
+  .error-box { background: #f9ecec; border: 1px solid #cf8b8b; color: #8c4a4a; }
+  .ok-box { background: #edf3ea; border: 1px solid var(--sage); color: var(--sage-dark); }
+
+  /* Stats */
+  .stats { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 1rem; margin-bottom: 1.25rem; }
+  .stat { background: #fff; border: 1px solid var(--line); border-radius: 8px; padding: 1.1rem 1.25rem; }
+  .stat .num { font-family: var(--serif); font-size: 2.1rem; color: var(--sage-dark); line-height: 1.15; }
+  .stat .lbl { font-size: 0.75rem; letter-spacing: 0.12em; text-transform: uppercase; color: var(--ink-soft); }
+
+  table { width: 100%; border-collapse: collapse; font-size: 0.92rem; }
+  th { text-align: left; font-weight: 500; font-size: 0.75rem; letter-spacing: 0.1em; text-transform: uppercase; color: var(--ink-soft); padding: 0.5rem 0.6rem; border-bottom: 1px solid var(--line); }
+  td { padding: 0.6rem; border-bottom: 1px solid var(--line); vertical-align: top; }
+  tr.rsvp-row { cursor: pointer; }
+  tr.rsvp-row:hover td { background: var(--cream); }
+  .pill { display: inline-block; border-radius: 999px; padding: 0.1rem 0.7rem; font-size: 0.78rem; }
+  .pill.yes { background: #edf3ea; color: var(--sage-dark); border: 1px solid var(--sage); }
+  .pill.no { background: var(--blush); color: var(--danger); border: 1px solid #d8b3b3; }
+  .guest-detail { background: var(--cream); border-radius: 6px; padding: 0.9rem 1rem; margin: 0.35rem 0; }
+  .guest-detail strong { font-weight: 500; }
+  .guest-detail .allergy { color: var(--danger); font-weight: 400; }
+  .table-scroll { overflow-x: auto; }
+
+  .tally-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 1rem; }
+  .tally h3 { font-size: 1.1rem; color: var(--sage-dark); margin-bottom: 0.5rem; }
+  .tally .trow { display: flex; justify-content: space-between; gap: 1rem; padding: 0.3rem 0; border-bottom: 1px dashed var(--line); font-size: 0.9rem; }
+  .tally .trow .n { font-weight: 500; color: var(--sage-dark); }
+
+  .allergy-item { padding: 0.55rem 0; border-bottom: 1px dashed var(--line); font-size: 0.93rem; }
+  .allergy-item strong { font-weight: 500; }
+
+  /* Menu editor */
+  .menu-course h3 { color: var(--sage-dark); margin: 1rem 0 0.5rem; font-size: 1.2rem; }
+  .menu-row { display: grid; grid-template-columns: 2fr 1fr auto auto; gap: 0.6rem; align-items: start; margin-bottom: 0.25rem; }
+  .menu-row input { margin-bottom: 0.35rem; }
+  .menu-row .btn { margin-top: 0.15rem; }
+  @media (max-width: 640px) { .menu-row { grid-template-columns: 1fr; } }
+
+  .sched-row { display: grid; grid-template-columns: 110px 1fr 2fr auto; gap: 0.6rem; align-items: start; }
+  @media (max-width: 640px) { .sched-row { grid-template-columns: 1fr; } }
+  .row2 { display: grid; grid-template-columns: 1fr 1fr; gap: 0 1.25rem; }
+  @media (max-width: 640px) { .row2 { grid-template-columns: 1fr; } }
+
+  .setup-steps li { margin: 0.6rem 0 0.6rem 1.25rem; }
+  code { background: var(--blush); border-radius: 4px; padding: 0.1rem 0.4rem; font-size: 0.88em; }
+</style>
+</head>
+<body>
+
+<header class="bar">
+  <h1>💐 Wedding Dashboard</h1>
+  <div class="actions">
+    <a class="btn small" href="../" target="_blank" rel="noopener">View guest site</a>
+    <button class="btn small" id="refresh-btn" style="display:none">Refresh</button>
+    <button class="btn small danger" id="logout-btn" style="display:none">Log out</button>
+  </div>
+</header>
+
+<main>
+  <!-- Setup instructions (only when config.js is empty) -->
+  <div id="setup-view" style="display:none">
+    <div class="card">
+      <h2>One-time setup needed</h2>
+      <p class="muted" style="margin:0.5rem 0 1rem">
+        The dashboard and live RSVP collection need the site's database connected. This takes about five minutes:
+      </p>
+      <ol class="setup-steps">
+        <li>Create a free project at <a href="https://supabase.com" target="_blank" rel="noopener">supabase.com</a> (any project name, choose a region near you).</li>
+        <li>Open the project's <strong>SQL Editor</strong>, paste the contents of <code>setup.sql</code> from this site's GitHub repository, and click <strong>Run</strong>.</li>
+        <li>In <strong>Authentication → Users</strong>, click <strong>Add user</strong> and create a login for each of you (email + password).</li>
+        <li>In <strong>Authentication → Sign In / Up</strong>, turn <strong>off</strong> "Allow new users to sign up".</li>
+        <li>In <strong>Project Settings → API</strong>, copy the <strong>Project URL</strong> and the <strong>anon public</strong> key into <code>config.js</code> in the GitHub repository (edit the file on github.com and commit).</li>
+      </ol>
+      <p class="muted">A minute or two after committing, reload this page and log in.</p>
+    </div>
+  </div>
+
+  <!-- Login -->
+  <div id="login-view" class="login-wrap" style="display:none">
+    <h2>Hello, you two 💛</h2>
+    <p class="muted">Sign in to see RSVPs and edit the site.</p>
+    <div class="card">
+      <div class="error-box" id="login-error"></div>
+      <form id="login-form">
+        <label for="login-email">Email</label>
+        <input type="email" id="login-email" autocomplete="username" required>
+        <label for="login-password">Password</label>
+        <input type="password" id="login-password" autocomplete="current-password" required>
+        <button class="btn solid" type="submit" style="width:100%">Sign in</button>
+      </form>
+    </div>
+  </div>
+
+  <!-- Dashboard -->
+  <div id="dash-view" style="display:none">
+    <div class="tabs">
+      <button data-tab="responses" class="active">Responses</button>
+      <button data-tab="menu">Menu</button>
+      <button data-tab="details">Site details</button>
+    </div>
+    <div class="error-box" id="dash-error"></div>
+    <div class="ok-box" id="dash-ok"></div>
+
+    <!-- Responses tab -->
+    <div id="tab-responses">
+      <div class="stats" id="stats"></div>
+      <div class="card">
+        <div style="display:flex; justify-content:space-between; align-items:center; gap:1rem; flex-wrap:wrap; margin-bottom:0.75rem">
+          <h2 style="font-size:1.3rem">RSVPs</h2>
+          <button class="btn small" id="export-btn">Export CSV for caterers</button>
+        </div>
+        <div class="table-scroll">
+          <table id="rsvp-table">
+            <thead><tr><th>Received</th><th>Contact</th><th>Attending</th><th>Party</th><th></th></tr></thead>
+            <tbody></tbody>
+          </table>
+        </div>
+        <p class="muted" id="no-rsvps" style="display:none; margin-top:0.75rem">No responses yet — share the site with your guests!</p>
+      </div>
+      <div class="card">
+        <h2 style="font-size:1.3rem; margin-bottom:0.75rem">Menu tallies</h2>
+        <div class="tally-grid" id="tallies"></div>
+      </div>
+      <div class="card">
+        <h2 style="font-size:1.3rem; margin-bottom:0.75rem">⚠️ Allergies &amp; dietary requirements</h2>
+        <div id="allergy-report"></div>
+      </div>
+    </div>
+
+    <!-- Menu tab -->
+    <div id="tab-menu" style="display:none">
+      <div class="card">
+        <h2 style="font-size:1.3rem">Edit the menu</h2>
+        <p class="muted" style="margin:0.35rem 0 0.75rem">
+          Changes appear on the guest site (and in the RSVP form) as soon as you save.
+          Guests who already responded keep their original choices.
+        </p>
+        <div id="menu-editor"></div>
+        <div style="margin-top:1.25rem; display:flex; gap:0.75rem">
+          <button class="btn solid" id="save-menu-btn">Save menu</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Details tab -->
+    <div id="tab-details" style="display:none">
+      <div class="card">
+        <h2 style="font-size:1.3rem">Site details</h2>
+        <p class="muted" style="margin:0.35rem 0 1rem">Everything guests see — saved changes go live immediately.</p>
+        <div class="row2">
+          <div><label>Couple (e.g. Charlie &amp; Lauren)</label><input id="s-couple"></div>
+          <div><label>Monogram (e.g. C &amp; L)</label><input id="s-monogram"></div>
+        </div>
+        <div class="row2">
+          <div><label>Tagline above your names</label><input id="s-tagline"></div>
+          <div><label>Contact email for guests</label><input id="s-contact" type="email"></div>
+        </div>
+        <div class="row2">
+          <div><label>Date (as guests should read it)</label><input id="s-date" placeholder="Saturday 12th June 2027"></div>
+          <div><label>RSVP deadline (as text)</label><input id="s-deadline" placeholder="12th March 2027"></div>
+        </div>
+        <label>Location line under the date</label>
+        <input id="s-place" placeholder="The Old Barn · Little Milton · Oxfordshire">
+        <div class="row2">
+          <div><label>Max guests per RSVP</label><input id="s-maxparty" type="number" min="1" max="12"></div>
+        </div>
+        <h3 style="color:var(--sage-dark); margin:1rem 0 0.75rem">Venue</h3>
+        <div class="row2">
+          <div><label>Venue name</label><input id="s-venue-name"></div>
+          <div><label>Google Maps link</label><input id="s-venue-maps" placeholder="https://maps.google.com/?q=…"></div>
+        </div>
+        <label>Venue description (parking, directions…)</label>
+        <textarea id="s-venue-desc" rows="2"></textarea>
+        <label>"Good to know" note (accommodation, taxis…)</label>
+        <textarea id="s-venue-note" rows="2"></textarea>
+        <h3 style="color:var(--sage-dark); margin:1rem 0 0.75rem">Order of the day</h3>
+        <div id="sched-editor"></div>
+        <button class="btn small" id="add-sched-btn" style="margin:0.25rem 0 1rem">+ Add item</button>
+        <label>Note under the menu</label>
+        <textarea id="s-footnote" rows="2"></textarea>
+        <div style="margin-top:0.75rem">
+          <button class="btn solid" id="save-settings-btn">Save site details</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</main>
+
+<script src="../config.js"></script>
+<script>
+const CFG = window.WEDDING_CONFIG || {};
+const URL_ = (CFG.SUPABASE_URL || "").replace(/\/$/, "");
+const KEY = CFG.SUPABASE_ANON_KEY || "";
+const CONFIGURED = !!(URL_ && KEY);
+const COURSES = [["starter", "Starters"], ["main", "Mains"], ["dessert", "Desserts"]];
+const $ = id => document.getElementById(id);
+const esc = s => String(s ?? "").replace(/[&<>"']/g, c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]));
+
+/* ---------- Auth ---------- */
+function getSession() {
+  try {
+    const s = JSON.parse(sessionStorage.getItem("wedding_session") || "null");
+    if (s && s.expires_at > Date.now() / 1000 + 30) return s;
+  } catch (e) {}
+  return null;
+}
+
+async function login(email, password) {
+  const res = await fetch(`${URL_}/auth/v1/token?grant_type=password`, {
+    method: "POST",
+    headers: { apikey: KEY, "Content-Type": "application/json" },
+    body: JSON.stringify({ email, password }),
+  });
+  const body = await res.json();
+  if (!res.ok) throw new Error(body.error_description || body.msg || "Sign-in failed");
+  const session = { token: body.access_token, expires_at: Math.floor(Date.now() / 1000) + (body.expires_in || 3600) };
+  sessionStorage.setItem("wedding_session", JSON.stringify(session));
+  return session;
+}
+
+function logout() {
+  sessionStorage.removeItem("wedding_session");
+  showView("login");
+}
+
+/* ---------- API ---------- */
+async function api(path, opts = {}) {
+  const session = getSession();
+  if (!session) { showView("login"); throw new Error("signed out"); }
+  const res = await fetch(`${URL_}/rest/v1/${path}`, {
+    ...opts,
+    headers: {
+      apikey: KEY,
+      Authorization: `Bearer ${session.token}`,
+      "Content-Type": "application/json",
+      ...(opts.headers || {}),
+    },
+  });
+  if (res.status === 401) { logout(); throw new Error("session expired"); }
+  if (!res.ok) throw new Error(`Request failed (${res.status})`);
+  const text = await res.text();
+  return text ? JSON.parse(text) : null;
+}
+
+/* ---------- Views ---------- */
+function showView(name) {
+  $("setup-view").style.display = name === "setup" ? "" : "none";
+  $("login-view").style.display = name === "login" ? "" : "none";
+  $("dash-view").style.display = name === "dash" ? "" : "none";
+  $("logout-btn").style.display = name === "dash" ? "" : "none";
+  $("refresh-btn").style.display = name === "dash" ? "" : "none";
+}
+
+function flash(kind, msg) {
+  const box = $(kind === "ok" ? "dash-ok" : "dash-error");
+  box.textContent = msg;
+  box.style.display = "block";
+  setTimeout(() => { box.style.display = "none"; }, 4000);
+}
+
+document.querySelectorAll(".tabs button").forEach(btn => btn.addEventListener("click", () => {
+  document.querySelectorAll(".tabs button").forEach(b => b.classList.toggle("active", b === btn));
+  ["responses", "menu", "details"].forEach(t => $("tab-" + t).style.display = btn.dataset.tab === t ? "" : "none");
+}));
+
+/* ---------- State ---------- */
+let RSVPS = [];
+let MENU = [];      // rows {id?, course, label, note, sort, active, _deleted?}
+let SETTINGS = {};  // settings.data blob
+const DEFAULT_SCHEDULE = [{ time: "", title: "", desc: "" }];
+
+async function loadAll() {
+  const [rsvps, menu, settings] = await Promise.all([
+    api("rsvps?select=*,rsvp_guests(*)&order=created_at.desc"),
+    api("menu_items?select=*&order=course.asc,sort.asc"),
+    api("settings?id=eq.1&select=data"),
+  ]);
+  RSVPS = rsvps || [];
+  MENU = (menu || []).map(m => ({ ...m }));
+  SETTINGS = (settings && settings[0] && settings[0].data) || {};
+  renderResponses();
+  renderMenuEditor();
+  renderSettingsForm();
+}
+
+/* ---------- Responses tab ---------- */
+function attendingGuests() {
+  return RSVPS.filter(r => r.attending).flatMap(r => (r.rsvp_guests || []).slice().sort((a, b) => a.sort - b.sort));
+}
+
+function renderResponses() {
+  const attending = RSVPS.filter(r => r.attending);
+  const declined = RSVPS.filter(r => !r.attending);
+  const guests = attendingGuests();
+  const withDietary = guests.filter(g => g.allergens || g.allergy_notes);
+
+  $("stats").innerHTML = [
+    [RSVPS.length, "Responses"],
+    [guests.length, "Guests attending"],
+    [declined.length, "Declined"],
+    [withDietary.length, "Dietary flags"],
+  ].map(([n, l]) => `<div class="stat"><div class="num">${n}</div><div class="lbl">${l}</div></div>`).join("");
+
+  const tbody = $("rsvp-table").querySelector("tbody");
+  tbody.innerHTML = RSVPS.map((r, i) => {
+    const date = new Date(r.created_at).toLocaleDateString("en-GB", { day: "numeric", month: "short" });
+    const contact = `${esc(r.contact_name)}<br><span class="muted">${esc(r.contact_email)}${r.contact_phone ? " · " + esc(r.contact_phone) : ""}</span>`;
+    const pill = r.attending ? '<span class="pill yes">Accepts</span>' : '<span class="pill no">Declines</span>';
+    const details = (r.rsvp_guests || []).slice().sort((a, b) => a.sort - b.sort).map(g => `
+      <div class="guest-detail">
+        <strong>${esc(g.name)}</strong><br>
+        ${esc(g.starter)} → ${esc(g.main)} → ${esc(g.dessert)}<br>
+        ${(g.allergens || g.allergy_notes)
+          ? `<span class="allergy">⚠ ${esc([g.allergens, g.allergy_notes].filter(Boolean).join(" — "))}</span>`
+          : '<span class="muted">No allergies declared</span>'}
+      </div>`).join("") +
+      (r.song ? `<p class="muted" style="margin-top:0.5rem">🎵 ${esc(r.song)}</p>` : "") +
+      (r.message ? `<p class="muted" style="margin-top:0.25rem">💬 ${esc(r.message)}</p>` : "");
+    return `
+      <tr class="rsvp-row" data-i="${i}">
+        <td style="white-space:nowrap">${date}</td>
+        <td>${contact}</td>
+        <td>${pill}</td>
+        <td>${r.attending ? r.party_size : "—"}</td>
+        <td><button class="btn small danger" data-del="${r.id}">Delete</button></td>
+      </tr>
+      <tr class="detail-row" style="display:none"><td colspan="5">${details || '<span class="muted">No guest details.</span>'}</td></tr>`;
+  }).join("");
+  $("no-rsvps").style.display = RSVPS.length ? "none" : "";
+
+  tbody.querySelectorAll("tr.rsvp-row").forEach(row => row.addEventListener("click", (e) => {
+    if (e.target.closest("button")) return;
+    const detail = row.nextElementSibling;
+    detail.style.display = detail.style.display === "none" ? "" : "none";
+  }));
+  tbody.querySelectorAll("button[data-del]").forEach(btn => btn.addEventListener("click", async () => {
+    if (!confirm("Delete this RSVP entirely? This can't be undone.")) return;
+    try {
+      await api(`rsvps?id=eq.${btn.dataset.del}`, { method: "DELETE" });
+      RSVPS = RSVPS.filter(r => r.id !== btn.dataset.del);
+      renderResponses();
+      flash("ok", "RSVP deleted.");
+    } catch (err) { flash("err", "Could not delete: " + err.message); }
+  }));
+
+  $("tallies").innerHTML = COURSES.map(([course, title]) => {
+    const counts = {};
+    guests.forEach(g => { const v = g[course]; if (v) counts[v] = (counts[v] || 0) + 1; });
+    const rows = Object.entries(counts).sort((a, b) => b[1] - a[1])
+      .map(([label, n]) => `<div class="trow"><span>${esc(label)}</span><span class="n">${n}</span></div>`).join("");
+    return `<div class="tally"><h3>${title}</h3>${rows || '<p class="muted">No choices yet.</p>'}</div>`;
+  }).join("");
+
+  const flagged = attendingGuests().filter(g => g.allergens || g.allergy_notes);
+  $("allergy-report").innerHTML = flagged.length
+    ? flagged.map(g => `<div class="allergy-item"><strong>${esc(g.name)}</strong> — ${esc([g.allergens, g.allergy_notes].filter(Boolean).join(" · "))}</div>`).join("")
+    : '<p class="muted">No allergies or dietary requirements declared so far.</p>';
+}
+
+$("export-btn").addEventListener("click", () => {
+  const headers = ["Party contact", "Email", "Phone", "Attending", "Guest", "Starter", "Main", "Dessert", "Allergens", "Allergy notes", "Song", "Message", "Received"];
+  const rows = [headers];
+  RSVPS.forEach(r => {
+    const base = [r.contact_name, r.contact_email, r.contact_phone, r.attending ? "Yes" : "No"];
+    const tail = [r.song, r.message, new Date(r.created_at).toISOString().slice(0, 10)];
+    const guests = (r.rsvp_guests || []).slice().sort((a, b) => a.sort - b.sort);
+    if (guests.length) guests.forEach(g => rows.push([...base, g.name, g.starter, g.main, g.dessert, g.allergens, g.allergy_notes, ...tail]));
+    else rows.push([...base, "", "", "", "", "", "", ...tail]);
+  });
+  const csv = rows.map(row => row.map(v => `"${String(v ?? "").replace(/"/g, '""')}"`).join(",")).join("\r\n");
+  const a = document.createElement("a");
+  a.href = "data:text/csv;charset=utf-8," + encodeURIComponent("﻿" + csv);
+  a.download = "wedding-rsvps.csv";
+  a.click();
+});
+
+$("refresh-btn").addEventListener("click", () => loadAll().catch(err => flash("err", err.message)));
+
+/* ---------- Menu tab ---------- */
+function renderMenuEditor() {
+  $("menu-editor").innerHTML = COURSES.map(([course, title]) => `
+    <div class="menu-course" data-course="${course}">
+      <h3>${title}</h3>
+      <div class="menu-rows">
+        ${MENU.filter(m => m.course === course && !m._deleted).map(m => menuRowHtml(m)).join("")}
+      </div>
+      <button class="btn small" data-add="${course}">+ Add dish</button>
+    </div>`).join("");
+
+  $("menu-editor").querySelectorAll("button[data-add]").forEach(btn => btn.addEventListener("click", () => {
+    const course = btn.dataset.add;
+    const item = { course, label: "", note: "", sort: MENU.filter(m => m.course === course).length + 1, active: true, _new: true, _key: Math.random().toString(36).slice(2) };
+    MENU.push(item);
+    btn.insertAdjacentHTML("beforebegin", "");
+    btn.previousElementSibling.insertAdjacentHTML("beforeend", menuRowHtml(item));
+    wireMenuRow(btn.previousElementSibling.lastElementChild);
+  }));
+  $("menu-editor").querySelectorAll(".menu-row").forEach(wireMenuRow);
+}
+
+function menuRowHtml(m) {
+  const key = m.id || m._key;
+  return `<div class="menu-row" data-key="${key}">
+    <input placeholder="Dish name" value="${esc(m.label)}" data-f="label">
+    <input placeholder="Note (e.g. vegan, gf)" value="${esc(m.note)}" data-f="note">
+    <label style="display:flex; align-items:center; gap:0.4rem; text-transform:none; margin-top:0.6rem">
+      <input type="checkbox" style="width:auto; margin:0" data-f="active" ${m.active ? "checked" : ""}> live
+    </label>
+    <button class="btn small danger" data-remove>✕</button>
+  </div>`;
+}
+
+function findMenuItem(key) {
+  return MENU.find(m => (m.id || m._key) === key);
+}
+
+function wireMenuRow(row) {
+  if (!row || row.dataset.wired) return;
+  row.dataset.wired = "1";
+  const item = findMenuItem(row.dataset.key);
+  row.querySelectorAll("[data-f]").forEach(input => input.addEventListener("input", () => {
+    item[input.dataset.f] = input.type === "checkbox" ? input.checked : input.value;
+  }));
+  row.querySelector("[data-remove]").addEventListener("click", () => {
+    item._deleted = true;
+    row.remove();
+  });
+}
+
+$("save-menu-btn").addEventListener("click", async () => {
+  const btn = $("save-menu-btn");
+  btn.disabled = true;
+  try {
+    for (const m of MENU) {
+      if (m._deleted && m.id) {
+        await api(`menu_items?id=eq.${m.id}`, { method: "DELETE" });
+      } else if (m._new && !m._deleted && m.label.trim()) {
+        await api("menu_items", {
+          method: "POST", headers: { Prefer: "return=minimal" },
+          body: JSON.stringify([{ course: m.course, label: m.label.trim(), note: m.note.trim(), sort: m.sort, active: m.active }]),
+        });
+      } else if (m.id && !m._deleted) {
+        await api(`menu_items?id=eq.${m.id}`, {
+          method: "PATCH", headers: { Prefer: "return=minimal" },
+          body: JSON.stringify({ label: m.label.trim(), note: m.note.trim(), active: m.active, sort: m.sort }),
+        });
+      }
+    }
+    flash("ok", "Menu saved — it's live on the guest site.");
+    const menu = await api("menu_items?select=*&order=course.asc,sort.asc");
+    MENU = (menu || []).map(m => ({ ...m }));
+    renderMenuEditor();
+  } catch (err) {
+    flash("err", "Could not save menu: " + err.message);
+  } finally {
+    btn.disabled = false;
+  }
+});
+
+/* ---------- Details tab ---------- */
+function renderSettingsForm() {
+  const s = SETTINGS;
+  $("s-couple").value = s.couple || "";
+  $("s-monogram").value = s.monogram || "";
+  $("s-tagline").value = s.tagline || "";
+  $("s-contact").value = s.contact_email || "";
+  $("s-date").value = s.date_display || "";
+  $("s-deadline").value = s.deadline_display || "";
+  $("s-place").value = s.place_line || "";
+  $("s-maxparty").value = s.max_party || 6;
+  const v = s.venue || {};
+  $("s-venue-name").value = v.name || "";
+  $("s-venue-maps").value = v.maps_url || "";
+  $("s-venue-desc").value = v.desc || "";
+  $("s-venue-note").value = v.note || "";
+  $("s-footnote").value = s.menu_footnote || "";
+  renderSchedEditor(Array.isArray(s.schedule) && s.schedule.length ? s.schedule : DEFAULT_SCHEDULE);
+}
+
+function renderSchedEditor(schedule) {
+  $("sched-editor").innerHTML = schedule.map(item => schedRowHtml(item)).join("");
+  wireSchedRows();
+}
+
+function schedRowHtml(item = { time: "", title: "", desc: "" }) {
+  return `<div class="sched-row">
+    <input placeholder="1:00pm" value="${esc(item.time)}" data-f="time">
+    <input placeholder="Ceremony" value="${esc(item.title)}" data-f="title">
+    <input placeholder="Short description" value="${esc(item.desc)}" data-f="desc">
+    <button class="btn small danger" data-remove>✕</button>
+  </div>`;
+}
+
+function wireSchedRows() {
+  $("sched-editor").querySelectorAll(".sched-row").forEach(row => {
+    if (row.dataset.wired) return;
+    row.dataset.wired = "1";
+    row.querySelector("[data-remove]").addEventListener("click", () => row.remove());
+  });
+}
+
+$("add-sched-btn").addEventListener("click", () => {
+  $("sched-editor").insertAdjacentHTML("beforeend", schedRowHtml());
+  wireSchedRows();
+});
+
+$("save-settings-btn").addEventListener("click", async () => {
+  const btn = $("save-settings-btn");
+  btn.disabled = true;
+  const schedule = [...$("sched-editor").querySelectorAll(".sched-row")].map(row => ({
+    time: row.querySelector('[data-f="time"]').value.trim(),
+    title: row.querySelector('[data-f="title"]').value.trim(),
+    desc: row.querySelector('[data-f="desc"]').value.trim(),
+  })).filter(item => item.time || item.title || item.desc);
+  const data = {
+    couple: $("s-couple").value.trim(),
+    monogram: $("s-monogram").value.trim(),
+    tagline: $("s-tagline").value.trim(),
+    contact_email: $("s-contact").value.trim(),
+    date_display: $("s-date").value.trim(),
+    deadline_display: $("s-deadline").value.trim(),
+    place_line: $("s-place").value.trim(),
+    max_party: Math.max(1, Math.min(12, Number($("s-maxparty").value) || 6)),
+    venue: {
+      name: $("s-venue-name").value.trim(),
+      maps_url: $("s-venue-maps").value.trim(),
+      desc: $("s-venue-desc").value.trim(),
+      note: $("s-venue-note").value.trim(),
+    },
+    schedule,
+    menu_footnote: $("s-footnote").value.trim(),
+  };
+  Object.keys(data).forEach(k => { if (data[k] === "" ) delete data[k]; });
+  try {
+    await api("settings?id=eq.1", {
+      method: "PATCH", headers: { Prefer: "return=minimal" },
+      body: JSON.stringify({ data, updated_at: new Date().toISOString() }),
+    });
+    SETTINGS = data;
+    flash("ok", "Saved — the guest site is updated.");
+  } catch (err) {
+    flash("err", "Could not save: " + err.message);
+  } finally {
+    btn.disabled = false;
+  }
+});
+
+/* ---------- Boot ---------- */
+$("login-form").addEventListener("submit", async (e) => {
+  e.preventDefault();
+  const errBox = $("login-error");
+  errBox.style.display = "none";
+  try {
+    await login($("login-email").value.trim(), $("login-password").value);
+    showView("dash");
+    await loadAll();
+  } catch (err) {
+    errBox.textContent = err.message;
+    errBox.style.display = "block";
+  }
+});
+
+$("logout-btn").addEventListener("click", logout);
+
+if (!CONFIGURED) {
+  showView("setup");
+} else if (getSession()) {
+  showView("dash");
+  loadAll().catch(err => flash("err", err.message));
+} else {
+  showView("login");
+}
+</script>
+</body>
+</html>

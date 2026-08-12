@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Emma &amp; James — We're Getting Married!</title>
+<title>Charlie &amp; Lauren — We're Getting Married!</title>
 <meta name="description" content="Wedding website — RSVP, choose your menu and let us know about any allergies.">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -32,7 +32,6 @@
   }
   h1, h2, h3 { font-family: var(--serif); font-weight: 500; }
 
-  /* ---------- Nav ---------- */
   nav {
     position: sticky; top: 0; z-index: 50;
     background: rgba(250, 247, 242, 0.92);
@@ -56,7 +55,6 @@
     nav ul li.hide-sm { display: none; }
   }
 
-  /* ---------- Hero ---------- */
   header.hero {
     text-align: center;
     padding: 5.5rem 1.5rem 4.5rem;
@@ -94,14 +92,12 @@
   .btn.solid:hover { background: var(--sage); border-color: var(--sage); }
   .btn:disabled { opacity: 0.5; cursor: wait; }
 
-  /* ---------- Sections ---------- */
   section { max-width: 960px; margin: 0 auto; padding: 4.5rem 1.5rem; }
   section + section { border-top: 1px solid var(--line); }
   .section-head { text-align: center; margin-bottom: 3rem; }
   .section-head .eyebrow { letter-spacing: 0.3em; text-transform: uppercase; font-size: 0.75rem; color: var(--gold); }
   .section-head h2 { font-size: clamp(1.9rem, 4.5vw, 2.6rem); margin-top: 0.5rem; }
 
-  /* Schedule */
   .schedule { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1.25rem; }
   .card {
     background: #fff; border: 1px solid var(--line); border-radius: 6px;
@@ -111,7 +107,6 @@
   .card h3 { font-size: 1.15rem; margin: 0.35rem 0 0.5rem; letter-spacing: 0.04em; }
   .card p { font-size: 0.9rem; color: var(--ink-soft); }
 
-  /* Venue */
   .venue-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 2.5rem; align-items: center; }
   @media (max-width: 700px) { .venue-grid { grid-template-columns: 1fr; } }
   .venue-grid h3 { font-size: 1.5rem; margin-bottom: 0.75rem; }
@@ -119,13 +114,17 @@
   .venue-note { background: var(--blush); border-radius: 6px; padding: 1.5rem 1.75rem; font-size: 0.95rem; }
   .venue-note strong { font-weight: 500; }
 
-  /* ---------- RSVP form ---------- */
+  .menu-cards { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 1.25rem; }
+  .menu-cards .card { text-align: left; }
+  .menu-cards .dish { margin-bottom: 0.65rem; }
+  .menu-cards .dish em { display: block; font-style: normal; font-size: 0.82rem; color: var(--gold); }
+
   #rsvp { max-width: 760px; }
-  form {
+  form.rsvp {
     background: #fff; border: 1px solid var(--line); border-radius: 8px;
     padding: 2.5rem 2rem;
   }
-  @media (max-width: 540px) { form { padding: 1.75rem 1.15rem; } }
+  @media (max-width: 540px) { form.rsvp { padding: 1.75rem 1.15rem; } }
   fieldset { border: none; margin-bottom: 2.25rem; }
   legend {
     font-family: var(--serif); font-size: 1.35rem; color: var(--sage-dark);
@@ -179,18 +178,26 @@
   .form-status.ok { display: block; background: #edf3ea; border: 1px solid var(--sage); color: var(--sage-dark); }
   .form-status.err { display: block; background: #f9ecec; border: 1px solid #cf8b8b; color: #8c4a4a; }
 
+  .sent-card {
+    display: none; text-align: center; background: #fff; border: 1px solid var(--line);
+    border-radius: 8px; padding: 3.5rem 2rem;
+  }
+  .sent-card h3 { font-size: 1.8rem; color: var(--sage-dark); margin-bottom: 0.75rem; }
+  .sent-card p { color: var(--ink-soft); }
+
   footer {
     text-align: center; padding: 3.5rem 1.5rem;
     border-top: 1px solid var(--line); color: var(--ink-soft); font-size: 0.9rem;
   }
   footer .monogram { font-family: var(--serif); font-size: 2rem; color: var(--sage-dark); margin-bottom: 0.5rem; }
+  footer a { color: var(--sage-dark); }
 </style>
 </head>
 <body>
 
 <nav>
   <div class="inner">
-    <a class="monogram" href="#top">E &amp; J</a>
+    <a class="monogram" href="#top" id="nav-monogram">C &amp; L</a>
     <ul>
       <li class="hide-sm"><a href="#day">The Day</a></li>
       <li class="hide-sm"><a href="#venue">Venue</a></li>
@@ -201,12 +208,12 @@
 </nav>
 
 <header class="hero" id="top">
-  <p class="eyebrow">Together with their families</p>
-  <h1>Emma <span class="amp">&amp;</span> James</h1>
+  <p class="eyebrow" id="hero-eyebrow">Together with their families</p>
+  <h1 id="hero-names">Charlie <span class="amp">&amp;</span> Lauren</h1>
   <div class="divider"></div>
-  <p class="date">Saturday 12th June 2027</p>
-  <p class="place">The Old Barn · Little Milton · Oxfordshire</p>
-  <a class="btn solid" href="#rsvp">RSVP by 12th March 2027</a>
+  <p class="date" id="hero-date">Date to be announced</p>
+  <p class="place" id="hero-place"></p>
+  <a class="btn solid" href="#rsvp" id="hero-cta">RSVP</a>
 </header>
 
 <section id="day">
@@ -214,28 +221,7 @@
     <p class="eyebrow">Order of the day</p>
     <h2>The Day</h2>
   </div>
-  <div class="schedule">
-    <div class="card">
-      <p class="time">1:00pm</p>
-      <h3>Ceremony</h3>
-      <p>Please be seated by 12:45pm. Confetti (dried petals only!) very welcome afterwards.</p>
-    </div>
-    <div class="card">
-      <p class="time">2:00pm</p>
-      <h3>Drinks Reception</h3>
-      <p>Fizz, lawn games and photographs in the courtyard garden.</p>
-    </div>
-    <div class="card">
-      <p class="time">4:30pm</p>
-      <h3>Wedding Breakfast</h3>
-      <p>A three-course meal — choose your dishes when you RSVP below.</p>
-    </div>
-    <div class="card">
-      <p class="time">7:30pm</p>
-      <h3>Evening Party</h3>
-      <p>First dance, live band and dancing until midnight. Evening food served at 9pm.</p>
-    </div>
-  </div>
+  <div class="schedule" id="schedule-cards"></div>
 </section>
 
 <section id="venue">
@@ -245,13 +231,11 @@
   </div>
   <div class="venue-grid">
     <div>
-      <h3>The Old Barn</h3>
-      <p>Little Milton, Oxfordshire, OX44 7PU. Free parking on site. The ceremony and reception both take place at the same venue, so once you're here you can relax for the day.</p>
-      <a class="btn" href="https://maps.google.com/?q=Little+Milton,+Oxfordshire" target="_blank" rel="noopener">Open in Maps</a>
+      <h3 id="venue-name">Venue to be announced</h3>
+      <p id="venue-desc"></p>
+      <a class="btn" id="venue-maps" href="#" target="_blank" rel="noopener" style="display:none">Open in Maps</a>
     </div>
-    <div class="venue-note">
-      <p><strong>Staying over?</strong> We've reserved a block of rooms at The Plough Inn (5 minutes away) — quote "Emma &amp; James" when booking. Taxis back to Oxford are best pre-booked; we'll share numbers nearer the time.</p>
-    </div>
+    <div class="venue-note" id="venue-note" style="display:none"><p></p></div>
   </div>
 </section>
 
@@ -260,39 +244,17 @@
     <p class="eyebrow">Wedding breakfast</p>
     <h2>The Menu</h2>
   </div>
-  <div class="venue-grid">
-    <div class="card" style="text-align:left">
-      <h3>Starters</h3>
-      <p>Roasted tomato &amp; basil soup <em>(vg, gf)</em><br>
-         Smoked salmon &amp; dill crème fraîche tart<br>
-         Whipped goat's cheese, beetroot &amp; candied walnuts <em>(v)</em></p>
-    </div>
-    <div class="card" style="text-align:left">
-      <h3>Mains</h3>
-      <p>Roast Oxfordshire beef, Yorkshire pudding &amp; red wine jus<br>
-         Pan-roasted chicken breast, fondant potato &amp; tarragon cream<br>
-         Wild mushroom &amp; chestnut wellington <em>(vg)</em></p>
-    </div>
-    <div class="card" style="text-align:left">
-      <h3>Desserts</h3>
-      <p>Sticky toffee pudding &amp; vanilla ice cream <em>(v)</em><br>
-         Lemon posset with raspberries &amp; shortbread <em>(v, gf option)</em><br>
-         Dark chocolate &amp; salted caramel torte <em>(vg, gf)</em></p>
-    </div>
-  </div>
-  <p style="text-align:center; margin-top:2rem; color:var(--ink-soft); font-size:0.95rem;">
-    Children's menu and any adapted dishes are no trouble at all — just tell us about
-    allergies and dietary requirements when you RSVP and our caterers will take care of it.
-  </p>
+  <div class="menu-cards" id="menu-cards"></div>
+  <p style="text-align:center; margin-top:2rem; color:var(--ink-soft); font-size:0.95rem;" id="menu-footnote"></p>
 </section>
 
 <section id="rsvp">
   <div class="section-head">
-    <p class="eyebrow">Kindly reply by 12th March 2027</p>
+    <p class="eyebrow" id="rsvp-eyebrow">Kindly reply</p>
     <h2>RSVP</h2>
   </div>
 
-  <form id="rsvp-form" novalidate>
+  <form class="rsvp" id="rsvp-form" novalidate>
     <fieldset>
       <legend>Your details</legend>
       <div class="row">
@@ -312,21 +274,14 @@
     <fieldset>
       <legend>Will you be joining us?</legend>
       <div class="choice-pills" role="radiogroup" aria-label="Attending">
-        <input type="radio" id="attend-yes" name="attending" value="Joyfully accepts" checked>
+        <input type="radio" id="attend-yes" name="attending" value="yes" checked>
         <label for="attend-yes">Joyfully accept 🎉</label>
-        <input type="radio" id="attend-no" name="attending" value="Regretfully declines">
+        <input type="radio" id="attend-no" name="attending" value="no">
         <label for="attend-no">Regretfully decline</label>
       </div>
       <div id="party-size-wrap">
         <label for="party-size">Number of guests in your party (including you)</label>
-        <select id="party-size" name="party_size">
-          <option value="1">1</option>
-          <option value="2">2</option>
-          <option value="3">3</option>
-          <option value="4">4</option>
-          <option value="5">5</option>
-          <option value="6">6</option>
-        </select>
+        <select id="party-size" name="party_size"></select>
       </div>
     </fieldset>
 
@@ -341,7 +296,7 @@
     <fieldset id="extras-fieldset">
       <legend>A few extras</legend>
       <label for="song">Song that will get you on the dance floor</label>
-      <input type="text" id="song" name="song_request" placeholder="Artist — Song">
+      <input type="text" id="song" name="song" placeholder="Artist — Song">
       <label for="message">Anything else we should know?</label>
       <textarea id="message" name="message" placeholder="Travel plans, accessibility needs, a note for us…"></textarea>
     </fieldset>
@@ -349,63 +304,185 @@
     <button type="submit" class="btn solid" id="submit-btn">Send RSVP</button>
     <div class="form-status" id="form-status" role="status"></div>
   </form>
+
+  <div class="sent-card" id="sent-card">
+    <h3>Thank you! 💛</h3>
+    <p>Your RSVP is safely with us — we can't wait to celebrate with you.<br>
+       Need to change anything? Just submit again or drop us an email and we'll use your latest answer.</p>
+    <p style="margin-top:1.5rem"><a class="btn" href="#" id="rsvp-again">Submit another RSVP</a></p>
+  </div>
 </section>
 
 <footer>
-  <div class="monogram">E &amp; J</div>
-  <p>12.06.2027 · The Old Barn, Oxfordshire</p>
-  <p>Questions? Email us at <a href="mailto:emmaandjames@example.com" style="color:var(--sage-dark)">emmaandjames@example.com</a></p>
+  <div class="monogram" id="footer-monogram">C &amp; L</div>
+  <p id="footer-line"></p>
+  <p>Questions? Email us at <a href="#" id="footer-email"></a></p>
 </footer>
 
+<script src="config.js"></script>
 <script>
 /* ============================================================
-   CONFIG — how RSVPs reach you.
-
-   Option A (recommended): create a free form at https://formspree.io,
-   then paste your endpoint below, e.g. "https://formspree.io/f/abcdwxyz".
-   Submissions will arrive in your inbox / Formspree dashboard as
-   structured data you can export to a spreadsheet.
-
-   Option B (default fallback): leave FORM_ENDPOINT empty and guests'
-   email apps will open with a pre-filled RSVP addressed to RSVP_EMAIL.
+   Content loads live from the couple's dashboard database
+   (Supabase) — edits made at /admin/ appear here on refresh.
+   If the database isn't configured or is unreachable, the site
+   falls back to the DEFAULTS below and RSVP submissions fall
+   back to a pre-filled email.
    ============================================================ */
-const FORM_ENDPOINT = "";
-const RSVP_EMAIL = "emmaandjames@example.com";
+const CFG = window.WEDDING_CONFIG || {};
+const DB = CFG.SUPABASE_URL && CFG.SUPABASE_ANON_KEY
+  ? { url: CFG.SUPABASE_URL.replace(/\/$/, ""), key: CFG.SUPABASE_ANON_KEY }
+  : null;
 
-const MENU = {
-  starter: [
-    { value: "Tomato & basil soup (vg, gf)", label: "Roasted tomato & basil soup", note: "vegan, gluten free" },
-    { value: "Smoked salmon tart", label: "Smoked salmon & dill crème fraîche tart", note: "" },
-    { value: "Goat's cheese & beetroot (v)", label: "Whipped goat's cheese, beetroot & candied walnuts", note: "vegetarian" },
+const DEFAULTS = {
+  couple: "Charlie & Lauren",
+  monogram: "C & L",
+  tagline: "Together with their families",
+  date_display: "Date to be announced",
+  place_line: "",
+  deadline_display: "",
+  contact_email: CFG.RSVP_EMAIL || "",
+  max_party: 6,
+  venue: { name: "Venue to be announced", desc: "", maps_url: "", note: "" },
+  schedule: [
+    { time: "1:00pm", title: "Ceremony", desc: "Please be seated by 12:45pm. Confetti (dried petals only!) very welcome afterwards." },
+    { time: "2:00pm", title: "Drinks Reception", desc: "Fizz, lawn games and photographs." },
+    { time: "4:30pm", title: "Wedding Breakfast", desc: "A three-course meal — choose your dishes when you RSVP below." },
+    { time: "7:30pm", title: "Evening Party", desc: "First dance, music and dancing into the night." },
   ],
-  main: [
-    { value: "Roast beef", label: "Roast Oxfordshire beef, Yorkshire pudding & red wine jus", note: "" },
-    { value: "Chicken breast", label: "Pan-roasted chicken breast, fondant potato & tarragon cream", note: "" },
-    { value: "Mushroom wellington (vg)", label: "Wild mushroom & chestnut wellington", note: "vegan" },
-  ],
-  dessert: [
-    { value: "Sticky toffee pudding (v)", label: "Sticky toffee pudding & vanilla ice cream", note: "vegetarian" },
-    { value: "Lemon posset (v)", label: "Lemon posset with raspberries & shortbread", note: "vegetarian, gluten-free option" },
-    { value: "Chocolate torte (vg, gf)", label: "Dark chocolate & salted caramel torte", note: "vegan, gluten free" },
-  ],
+  menu_footnote: "Children's menu and any adapted dishes are no trouble at all — just tell us about allergies and dietary requirements when you RSVP and our caterers will take care of it.",
 };
 
+const DEFAULT_MENU = [
+  { course: "starter", label: "Roasted tomato & basil soup", note: "vegan, gluten free" },
+  { course: "starter", label: "Smoked salmon & dill crème fraîche tart", note: "" },
+  { course: "starter", label: "Whipped goat's cheese, beetroot & candied walnuts", note: "vegetarian" },
+  { course: "main", label: "Roast beef, Yorkshire pudding & red wine jus", note: "" },
+  { course: "main", label: "Pan-roasted chicken breast, fondant potato & tarragon cream", note: "" },
+  { course: "main", label: "Wild mushroom & chestnut wellington", note: "vegan" },
+  { course: "dessert", label: "Sticky toffee pudding & vanilla ice cream", note: "vegetarian" },
+  { course: "dessert", label: "Lemon posset with raspberries & shortbread", note: "vegetarian, gluten-free option" },
+  { course: "dessert", label: "Dark chocolate & salted caramel torte", note: "vegan, gluten free" },
+];
+
+const COURSES = [["starter", "Starters"], ["main", "Mains"], ["dessert", "Desserts"]];
 const COMMON_ALLERGENS = ["Gluten", "Dairy", "Eggs", "Nuts", "Peanuts", "Shellfish", "Fish", "Soya", "Sesame"];
 
-const form = document.getElementById("rsvp-form");
-const guestCards = document.getElementById("guest-cards");
-const partySize = document.getElementById("party-size");
-const partySizeWrap = document.getElementById("party-size-wrap");
-const guestsFieldset = document.getElementById("guests-fieldset");
-const extrasFieldset = document.getElementById("extras-fieldset");
-const statusBox = document.getElementById("form-status");
-const submitBtn = document.getElementById("submit-btn");
+let SETTINGS = { ...DEFAULTS };
+let MENU = [...DEFAULT_MENU];
+
+/* ---------- Data access ---------- */
+async function dbFetch(path) {
+  const res = await fetch(`${DB.url}/rest/v1/${path}`, {
+    headers: { apikey: DB.key, Authorization: `Bearer ${DB.key}` },
+  });
+  if (!res.ok) throw new Error(`db ${res.status}`);
+  return res.json();
+}
+
+async function dbInsert(table, rows) {
+  const res = await fetch(`${DB.url}/rest/v1/${table}`, {
+    method: "POST",
+    headers: {
+      apikey: DB.key, Authorization: `Bearer ${DB.key}`,
+      "Content-Type": "application/json", Prefer: "return=minimal",
+    },
+    body: JSON.stringify(rows),
+  });
+  if (!res.ok) throw new Error(`db insert ${table} ${res.status}`);
+}
+
+async function loadContent() {
+  if (!DB) return;
+  try {
+    const [settingsRows, menuRows] = await Promise.all([
+      dbFetch("settings?id=eq.1&select=data"),
+      dbFetch("menu_items?active=is.true&select=course,label,note&order=course.asc,sort.asc"),
+    ]);
+    if (settingsRows[0] && settingsRows[0].data) {
+      const d = settingsRows[0].data;
+      SETTINGS = { ...DEFAULTS, ...d, venue: { ...DEFAULTS.venue, ...(d.venue || {}) } };
+      if (!Array.isArray(SETTINGS.schedule) || !SETTINGS.schedule.length) SETTINGS.schedule = DEFAULTS.schedule;
+    }
+    if (menuRows.length) MENU = menuRows;
+    render();
+  } catch (e) {
+    /* fall back to defaults silently — the site must still work */
+  }
+}
+
+/* ---------- Rendering ---------- */
+const $ = id => document.getElementById(id);
+const esc = s => String(s ?? "").replace(/[&<>"']/g, c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]));
+
+function coupleHtml(name) {
+  const parts = String(name).split("&");
+  return parts.length === 2
+    ? `${esc(parts[0].trim())} <span class="amp">&amp;</span> ${esc(parts[1].trim())}`
+    : esc(name);
+}
+
+function render() {
+  const s = SETTINGS;
+  document.title = `${s.couple} — We're Getting Married!`;
+  $("nav-monogram").textContent = s.monogram;
+  $("footer-monogram").textContent = s.monogram;
+  $("hero-eyebrow").textContent = s.tagline;
+  $("hero-names").innerHTML = coupleHtml(s.couple);
+  $("hero-date").textContent = s.date_display;
+  $("hero-place").textContent = s.place_line;
+  $("hero-cta").textContent = s.deadline_display ? `RSVP by ${s.deadline_display}` : "RSVP";
+  $("rsvp-eyebrow").textContent = s.deadline_display ? `Kindly reply by ${s.deadline_display}` : "Kindly reply";
+
+  $("schedule-cards").innerHTML = (s.schedule || []).map(item => `
+    <div class="card">
+      <p class="time">${esc(item.time)}</p>
+      <h3>${esc(item.title)}</h3>
+      <p>${esc(item.desc)}</p>
+    </div>`).join("");
+
+  $("venue-name").textContent = s.venue.name;
+  $("venue-desc").textContent = s.venue.desc;
+  const maps = $("venue-maps");
+  if (s.venue.maps_url) { maps.href = s.venue.maps_url; maps.style.display = ""; }
+  else maps.style.display = "none";
+  const note = $("venue-note");
+  if (s.venue.note) { note.style.display = ""; note.querySelector("p").innerHTML = `<strong>Good to know:</strong> ${esc(s.venue.note)}`; }
+  else note.style.display = "none";
+
+  $("menu-cards").innerHTML = COURSES.map(([course, title]) => {
+    const dishes = MENU.filter(m => m.course === course);
+    if (!dishes.length) return "";
+    return `<div class="card">
+      <h3>${title}</h3>
+      ${dishes.map(d => `<p class="dish">${esc(d.label)}${d.note ? `<em>${esc(d.note)}</em>` : ""}</p>`).join("")}
+    </div>`;
+  }).join("");
+  $("menu-footnote").textContent = s.menu_footnote;
+
+  const email = s.contact_email || CFG.RSVP_EMAIL || "";
+  const emailLink = $("footer-email");
+  emailLink.textContent = email;
+  emailLink.href = `mailto:${email}`;
+  $("footer-line").textContent = [s.date_display, s.venue.name].filter(v => v && !/to be announced/i.test(v)).join(" · ");
+
+  const sizeSel = $("party-size");
+  const prev = Number(sizeSel.value || 1);
+  const max = Number(s.max_party) || 6;
+  sizeSel.innerHTML = Array.from({ length: max }, (_, i) => `<option value="${i + 1}">${i + 1}</option>`).join("");
+  sizeSel.value = String(Math.min(prev, max));
+  renderGuestCards(Number(sizeSel.value));
+}
+
+/* ---------- RSVP form ---------- */
+const form = $("rsvp-form");
 
 function menuGroup(guestIdx, course, title) {
-  const options = MENU[course].map((opt, i) => `
+  const dishes = MENU.filter(m => m.course === course);
+  if (!dishes.length) return "";
+  const options = dishes.map((opt, i) => `
     <div class="menu-option">
-      <input type="radio" id="g${guestIdx}-${course}-${i}" name="guest${guestIdx}_${course}" value="${opt.value}" ${i === 0 ? "required" : ""}>
-      <label for="g${guestIdx}-${course}-${i}">${opt.label}${opt.note ? `<em>${opt.note}</em>` : ""}</label>
+      <input type="radio" id="g${guestIdx}-${course}-${i}" name="guest${guestIdx}_${course}" value="${esc(opt.label)}">
+      <label for="g${guestIdx}-${course}-${i}">${esc(opt.label)}${opt.note ? `<em>${esc(opt.note)}</em>` : ""}</label>
     </div>`).join("");
   return `<div class="menu-group"><span>${title} *</span>${options}</div>`;
 }
@@ -419,68 +496,85 @@ function allergenChecks(guestIdx) {
 }
 
 function renderGuestCards(count) {
-  guestCards.innerHTML = "";
+  const holder = $("guest-cards");
+  const existingNames = [...holder.querySelectorAll('input[type="text"]')].map(el => el.value);
+  holder.innerHTML = "";
   for (let i = 1; i <= count; i++) {
     const card = document.createElement("div");
     card.className = "guest-card";
     card.innerHTML = `
       <h3>Guest ${i} <span class="tag">${i === 1 ? "that's you" : ""}</span></h3>
       <label for="g${i}-name">Full name *</label>
-      <input type="text" id="g${i}-name" name="guest${i}_name" required>
-      ${menuGroup(i, "starter", "Starter")}
-      ${menuGroup(i, "main", "Main")}
-      ${menuGroup(i, "dessert", "Dessert")}
+      <input type="text" id="g${i}-name" name="guest${i}_name" required value="${esc(existingNames[i - 1] || "")}">
+      ${COURSES.map(([course]) => menuGroup(i, course, course.charAt(0).toUpperCase() + course.slice(1))).join("")}
       <div class="allergy-box">
         <p><strong>Allergies &amp; dietary requirements</strong> — tick any that apply and add detail below (e.g. severity, coeliac, halal, pregnancy).</p>
         <div class="allergy-checks">${allergenChecks(i)}</div>
         <label for="g${i}-allergy-notes" style="text-transform:none; letter-spacing:0;">Other allergies / dietary notes</label>
         <textarea id="g${i}-allergy-notes" name="guest${i}_allergy_notes" rows="2" placeholder="e.g. severe peanut allergy (carries EpiPen), no alcohol in food"></textarea>
       </div>`;
-    guestCards.appendChild(card);
+    holder.appendChild(card);
   }
-  // Keep guest 1's name in sync with the contact name if untouched
-  const contactName = document.getElementById("contact-name");
-  const g1 = document.getElementById("g1-name");
+  const contactName = $("contact-name");
+  const g1 = $("g1-name");
   if (g1 && contactName.value && !g1.value) g1.value = contactName.value;
+  updateAttendingUI();
 }
 
-function isAttending() {
-  return document.getElementById("attend-yes").checked;
-}
+function isAttending() { return $("attend-yes").checked; }
 
 function updateAttendingUI() {
   const show = isAttending();
-  guestsFieldset.style.display = show ? "" : "none";
-  extrasFieldset.style.display = show ? "" : "none";
-  partySizeWrap.style.display = show ? "" : "none";
-  guestCards.querySelectorAll("input, textarea").forEach(el => (el.disabled = !show));
+  $("guests-fieldset").style.display = show ? "" : "none";
+  $("extras-fieldset").style.display = show ? "" : "none";
+  $("party-size-wrap").style.display = show ? "" : "none";
+  $("guest-cards").querySelectorAll("input, textarea").forEach(el => (el.disabled = !show));
 }
 
-partySize.addEventListener("change", () => renderGuestCards(Number(partySize.value)));
+$("party-size").addEventListener("change", () => renderGuestCards(Number($("party-size").value)));
 document.querySelectorAll('input[name="attending"]').forEach(el => el.addEventListener("change", updateAttendingUI));
-document.getElementById("contact-name").addEventListener("blur", () => {
-  const g1 = document.getElementById("g1-name");
-  if (g1 && !g1.value) g1.value = document.getElementById("contact-name").value;
+$("contact-name").addEventListener("blur", () => {
+  const g1 = $("g1-name");
+  if (g1 && !g1.value) g1.value = $("contact-name").value;
+});
+$("rsvp-again").addEventListener("click", (e) => {
+  e.preventDefault();
+  form.reset();
+  $("sent-card").style.display = "none";
+  form.style.display = "";
+  render();
+  form.scrollIntoView({ behavior: "smooth" });
 });
 
-renderGuestCards(1);
-updateAttendingUI();
+function newUuid() {
+  if (crypto.randomUUID) return crypto.randomUUID();
+  return "xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx".replace(/[xy]/g, c => {
+    const r = Math.random() * 16 | 0;
+    return (c === "x" ? r : (r & 0x3 | 0x8)).toString(16);
+  });
+}
 
 function collectRsvp() {
-  const data = {
+  const attending = isAttending();
+  const rsvpId = newUuid();
+  const rsvp = {
+    id: rsvpId,
     contact_name: form.contact_name.value.trim(),
     contact_email: form.contact_email.value.trim(),
     contact_phone: form.contact_phone.value.trim(),
-    attending: form.attending.value,
+    attending,
+    party_size: attending ? Number($("party-size").value) : 0,
+    song: attending ? form.song.value.trim() : "",
+    message: attending ? form.message.value.trim() : "",
   };
-  if (isAttending()) {
-    const count = Number(partySize.value);
-    data.party_size = count;
-    data.guests = [];
-    for (let i = 1; i <= count; i++) {
+  const guests = [];
+  if (attending) {
+    for (let i = 1; i <= rsvp.party_size; i++) {
       const allergens = [...form.querySelectorAll(`input[name="guest${i}_allergens"]:checked`)].map(el => el.value);
       const pick = course => (form.querySelector(`input[name="guest${i}_${course}"]:checked`) || {}).value || "";
-      data.guests.push({
+      guests.push({
+        rsvp_id: rsvpId,
+        sort: i,
         name: form[`guest${i}_name`].value.trim(),
         starter: pick("starter"),
         main: pick("main"),
@@ -489,10 +583,8 @@ function collectRsvp() {
         allergy_notes: form[`guest${i}_allergy_notes`].value.trim(),
       });
     }
-    data.song_request = form.song_request.value.trim();
-    data.message = form.message.value.trim();
   }
-  return data;
+  return { rsvp, guests };
 }
 
 function validate() {
@@ -501,14 +593,14 @@ function validate() {
     return false;
   }
   if (isAttending()) {
-    const count = Number(partySize.value);
+    const count = Number($("party-size").value);
     for (let i = 1; i <= count; i++) {
       if (!form[`guest${i}_name`].value.trim()) {
         showStatus("err", `Please add a name for guest ${i}.`);
         return false;
       }
-      for (const course of ["starter", "main", "dessert"]) {
-        if (!form.querySelector(`input[name="guest${i}_${course}"]:checked`)) {
+      for (const [course] of COURSES) {
+        if (MENU.some(m => m.course === course) && !form.querySelector(`input[name="guest${i}_${course}"]:checked`)) {
           showStatus("err", `Please choose a ${course} for guest ${i}.`);
           return false;
         }
@@ -519,68 +611,65 @@ function validate() {
 }
 
 function showStatus(kind, msg) {
-  statusBox.className = "form-status " + kind;
-  statusBox.textContent = msg;
-  statusBox.scrollIntoView({ behavior: "smooth", block: "nearest" });
+  const box = $("form-status");
+  box.className = "form-status " + kind;
+  box.textContent = msg;
+  box.scrollIntoView({ behavior: "smooth", block: "nearest" });
 }
 
-function toEmailBody(data) {
+function toEmailBody({ rsvp, guests }) {
   const lines = [
-    `RSVP from ${data.contact_name}`,
-    `Email: ${data.contact_email}`,
-    data.contact_phone ? `Phone: ${data.contact_phone}` : "",
-    `Attending: ${data.attending}`,
+    `RSVP from ${rsvp.contact_name}`,
+    `Email: ${rsvp.contact_email}`,
+    rsvp.contact_phone ? `Phone: ${rsvp.contact_phone}` : "",
+    `Attending: ${rsvp.attending ? "Joyfully accepts" : "Regretfully declines"}`,
     "",
   ];
-  (data.guests || []).forEach((g, i) => {
+  guests.forEach((g, i) => {
     lines.push(
       `--- Guest ${i + 1}: ${g.name} ---`,
-      `Starter: ${g.starter}`,
-      `Main: ${g.main}`,
-      `Dessert: ${g.dessert}`,
+      `Starter: ${g.starter}`, `Main: ${g.main}`, `Dessert: ${g.dessert}`,
       `Allergens: ${g.allergens || "none ticked"}`,
       g.allergy_notes ? `Allergy notes: ${g.allergy_notes}` : "Allergy notes: none",
       ""
     );
   });
-  if (data.song_request) lines.push(`Song request: ${data.song_request}`);
-  if (data.message) lines.push(`Message: ${data.message}`);
-  return lines.filter(l => l !== null).join("\n");
+  if (rsvp.song) lines.push(`Song request: ${rsvp.song}`);
+  if (rsvp.message) lines.push(`Message: ${rsvp.message}`);
+  return lines.join("\n");
 }
 
 form.addEventListener("submit", async (e) => {
   e.preventDefault();
-  statusBox.className = "form-status";
+  $("form-status").className = "form-status";
   if (!validate()) return;
   const data = collectRsvp();
+  const email = SETTINGS.contact_email || CFG.RSVP_EMAIL || "";
 
-  if (!FORM_ENDPOINT) {
-    // Fallback: open the guest's email app with everything pre-filled.
-    const subject = encodeURIComponent(`Wedding RSVP — ${data.contact_name}`);
-    const body = encodeURIComponent(toEmailBody(data));
-    window.location.href = `mailto:${RSVP_EMAIL}?subject=${subject}&body=${body}`;
-    showStatus("ok", "We've opened your email app with your RSVP filled in — just press send! If nothing opened, email us directly at " + RSVP_EMAIL + ".");
+  if (!DB) {
+    const subject = encodeURIComponent(`Wedding RSVP — ${data.rsvp.contact_name}`);
+    window.location.href = `mailto:${email}?subject=${subject}&body=${encodeURIComponent(toEmailBody(data))}`;
+    showStatus("ok", "We've opened your email app with your RSVP filled in — just press send! If nothing opened, email us directly at " + email + ".");
     return;
   }
 
-  submitBtn.disabled = true;
+  const btn = $("submit-btn");
+  btn.disabled = true;
   try {
-    const res = await fetch(FORM_ENDPOINT, {
-      method: "POST",
-      headers: { "Content-Type": "application/json", "Accept": "application/json" },
-      body: JSON.stringify({ ...data, guests: undefined, guests_details: toEmailBody(data), _subject: `Wedding RSVP — ${data.contact_name}` }),
-    });
-    if (!res.ok) throw new Error("Bad response");
-    form.reset();
-    renderGuestCards(1);
-    updateAttendingUI();
-    showStatus("ok", "Thank you — your RSVP has been sent! We can't wait to celebrate with you. 💛");
-  } catch {
-    showStatus("err", "Something went wrong sending your RSVP. Please try again, or email us at " + RSVP_EMAIL + ".");
+    await dbInsert("rsvps", [data.rsvp]);
+    if (data.guests.length) await dbInsert("rsvp_guests", data.guests);
+    form.style.display = "none";
+    $("sent-card").style.display = "block";
+    $("sent-card").scrollIntoView({ behavior: "smooth", block: "center" });
+  } catch (err) {
+    showStatus("err", "Something went wrong sending your RSVP. Please try again in a minute" + (email ? ", or email us at " + email : "") + ".");
   } finally {
-    submitBtn.disabled = false;
+    btn.disabled = false;
   }
 });
+
+render();
+loadContent();
 </script>
 </body>
 </html>
