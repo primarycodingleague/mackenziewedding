@@ -212,10 +212,11 @@
             <button class="btn small solid" id="add-hh-btn">+ Add household</button>
           </div>
         </div>
-        <p class="muted" style="margin-bottom:1rem">
+        <p class="muted" style="margin-bottom:0.25rem">
           Each household gets a personal invite link — anyone in the family can open it and RSVP for
           the whole party. "Full day" and "Evening" control which version of the site they see.
         </p>
+        <p style="margin-bottom:1rem; font-weight:400; color:var(--sage-dark)" id="hh-summary"></p>
         <div id="hh-form-holder"></div>
         <div id="hh-list"></div>
         <p class="muted" id="no-hh" style="display:none">No households yet — add your first one, or leave the guest list empty and keep RSVPs open to anyone (see Publishing).</p>
@@ -477,15 +478,38 @@ function renderResponses() {
   const declined = RSVPS.filter(r => !r.attending);
   const guests = attendingGuests();
   const withDietary = guests.filter(g => g.allergens || g.allergy_notes);
-  const notReplied = HOUSEHOLDS.filter(h => !RSVPS.some(r => r.household_id === h.id)).length;
 
-  $("stats").innerHTML = [
-    [RSVPS.length, "Responses"],
-    [guests.length, "Guests attending"],
-    [declined.length, "Declined"],
-    [withDietary.length, "Dietary flags"],
-    ...(HOUSEHOLDS.length ? [[notReplied, "Households yet to reply"]] : []),
-  ].map(([n, l]) => `<div class="stat"><div class="num">${n}</div><div class="lbl">${l}</div></div>`).join("");
+  let statRows;
+  if (HOUSEHOLDS.length) {
+    const invitedTotal = HOUSEHOLDS.reduce((n, h) => n + h.household_guests.length, 0);
+    const repliedHH = HOUSEHOLDS.filter(h => RSVPS.some(r => r.household_id === h.id));
+    const awaitingGuests = HOUSEHOLDS
+      .filter(h => !RSVPS.some(r => r.household_id === h.id))
+      .reduce((n, h) => n + h.household_guests.length, 0);
+    // Individuals marked "can't come" in a reply, plus whole-party
+    // declines that carried no per-guest detail (counted as one).
+    const notComing = RSVPS.reduce((n, r) => {
+      const flagged = (r.rsvp_guests || []).filter(g => g.attending === false).length;
+      return n + flagged + (!r.attending && !(r.rsvp_guests || []).length ? 1 : 0);
+    }, 0);
+    statRows = [
+      [invitedTotal, "Guests invited"],
+      [guests.length, "Attending"],
+      [notComing, "Not coming"],
+      [awaitingGuests, "Awaiting reply"],
+      [withDietary.length, "Dietary flags"],
+      [`${repliedHH.length}/${HOUSEHOLDS.length}`, "Households replied"],
+    ];
+  } else {
+    statRows = [
+      [RSVPS.length, "Responses"],
+      [guests.length, "Guests attending"],
+      [declined.length, "Declined"],
+      [withDietary.length, "Dietary flags"],
+    ];
+  }
+  $("stats").innerHTML = statRows
+    .map(([n, l]) => `<div class="stat"><div class="num">${n}</div><div class="lbl">${l}</div></div>`).join("");
 
   const tbody = $("rsvp-table").querySelector("tbody");
   tbody.innerHTML = RSVPS.map((r, i) => {
@@ -595,6 +619,11 @@ function inviteLink(code) { return `${SITE_URL}?inv=${code}`; }
 function renderHouseholds() {
   const holder = $("hh-list");
   $("no-hh").style.display = HOUSEHOLDS.length ? "none" : "";
+  const totalGuests = HOUSEHOLDS.reduce((n, h) => n + h.household_guests.length, 0);
+  const dayGuests = HOUSEHOLDS.filter(h => h.audience === "day").reduce((n, h) => n + h.household_guests.length, 0);
+  $("hh-summary").textContent = HOUSEHOLDS.length
+    ? `${HOUSEHOLDS.length} household${HOUSEHOLDS.length === 1 ? "" : "s"} · ${totalGuests} guest${totalGuests === 1 ? "" : "s"} invited (${dayGuests} full day, ${totalGuests - dayGuests} evening)`
+    : "";
   holder.innerHTML = HOUSEHOLDS.map(h => {
     const responded = RSVPS.some(r => r.household_id === h.id);
     const names = h.household_guests.map(g => esc(g.name)).join(", ") || '<span class="muted">no guests added yet</span>';
