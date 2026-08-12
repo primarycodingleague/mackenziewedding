@@ -1,0 +1,586 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Emma &amp; James — We're Getting Married!</title>
+<meta name="description" content="Wedding website — RSVP, choose your menu and let us know about any allergies.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;1,400&family=Jost:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --ink: #3d3a37;
+    --ink-soft: #6f6a64;
+    --cream: #faf7f2;
+    --blush: #f3e7e1;
+    --sage: #8a9b84;
+    --sage-dark: #5f7059;
+    --gold: #b7995c;
+    --line: #e4dcd2;
+    --serif: 'Cormorant Garamond', Georgia, serif;
+    --sans: 'Jost', 'Segoe UI', sans-serif;
+  }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  html { scroll-behavior: smooth; }
+  body {
+    font-family: var(--sans);
+    font-weight: 300;
+    color: var(--ink);
+    background: var(--cream);
+    line-height: 1.7;
+  }
+  h1, h2, h3 { font-family: var(--serif); font-weight: 500; }
+
+  /* ---------- Nav ---------- */
+  nav {
+    position: sticky; top: 0; z-index: 50;
+    background: rgba(250, 247, 242, 0.92);
+    backdrop-filter: blur(8px);
+    border-bottom: 1px solid var(--line);
+  }
+  nav .inner {
+    max-width: 960px; margin: 0 auto; padding: 0.9rem 1.25rem;
+    display: flex; justify-content: space-between; align-items: center; gap: 1rem;
+  }
+  nav .monogram { font-family: var(--serif); font-size: 1.35rem; letter-spacing: 0.08em; color: var(--sage-dark); text-decoration: none; }
+  nav ul { display: flex; gap: 1.5rem; list-style: none; }
+  nav ul a {
+    text-decoration: none; color: var(--ink-soft);
+    font-size: 0.85rem; letter-spacing: 0.14em; text-transform: uppercase;
+  }
+  nav ul a:hover, nav ul a.cta { color: var(--sage-dark); }
+  nav ul a.cta { font-weight: 500; }
+  @media (max-width: 620px) {
+    nav ul { gap: 0.9rem; }
+    nav ul li.hide-sm { display: none; }
+  }
+
+  /* ---------- Hero ---------- */
+  header.hero {
+    text-align: center;
+    padding: 5.5rem 1.5rem 4.5rem;
+    background:
+      radial-gradient(ellipse at 20% 10%, rgba(243, 231, 225, 0.9), transparent 55%),
+      radial-gradient(ellipse at 85% 85%, rgba(138, 155, 132, 0.18), transparent 50%),
+      var(--cream);
+  }
+  .hero .eyebrow {
+    letter-spacing: 0.35em; text-transform: uppercase;
+    font-size: 0.8rem; color: var(--gold); margin-bottom: 1.75rem;
+  }
+  .hero h1 { font-size: clamp(2.8rem, 8vw, 5rem); line-height: 1.1; }
+  .hero h1 .amp { font-style: italic; color: var(--sage); font-size: 0.7em; padding: 0 0.15em; }
+  .hero .date {
+    margin-top: 1.75rem; font-family: var(--serif); font-size: 1.4rem; font-style: italic; color: var(--ink-soft);
+  }
+  .hero .place { margin-top: 0.4rem; letter-spacing: 0.18em; text-transform: uppercase; font-size: 0.85rem; color: var(--ink-soft); }
+  .hero .btn { margin-top: 2.5rem; }
+  .divider { width: 64px; height: 1px; background: var(--gold); margin: 1.75rem auto 0; position: relative; }
+  .divider::after {
+    content: '♥'; position: absolute; top: 50%; left: 50%; transform: translate(-50%, -55%);
+    background: var(--cream); padding: 0 0.6rem; color: var(--gold); font-size: 0.7rem;
+  }
+
+  .btn {
+    display: inline-block; border: 1px solid var(--sage-dark);
+    color: var(--sage-dark); background: transparent;
+    padding: 0.85rem 2.4rem; letter-spacing: 0.2em; text-transform: uppercase;
+    font-size: 0.8rem; font-family: var(--sans); font-weight: 400;
+    text-decoration: none; cursor: pointer; transition: all 0.25s ease; border-radius: 2px;
+  }
+  .btn:hover { background: var(--sage-dark); color: #fff; }
+  .btn.solid { background: var(--sage-dark); color: #fff; }
+  .btn.solid:hover { background: var(--sage); border-color: var(--sage); }
+  .btn:disabled { opacity: 0.5; cursor: wait; }
+
+  /* ---------- Sections ---------- */
+  section { max-width: 960px; margin: 0 auto; padding: 4.5rem 1.5rem; }
+  section + section { border-top: 1px solid var(--line); }
+  .section-head { text-align: center; margin-bottom: 3rem; }
+  .section-head .eyebrow { letter-spacing: 0.3em; text-transform: uppercase; font-size: 0.75rem; color: var(--gold); }
+  .section-head h2 { font-size: clamp(1.9rem, 4.5vw, 2.6rem); margin-top: 0.5rem; }
+
+  /* Schedule */
+  .schedule { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1.25rem; }
+  .card {
+    background: #fff; border: 1px solid var(--line); border-radius: 6px;
+    padding: 1.75rem 1.5rem; text-align: center;
+  }
+  .card .time { font-family: var(--serif); font-size: 1.5rem; color: var(--sage-dark); }
+  .card h3 { font-size: 1.15rem; margin: 0.35rem 0 0.5rem; letter-spacing: 0.04em; }
+  .card p { font-size: 0.9rem; color: var(--ink-soft); }
+
+  /* Venue */
+  .venue-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 2.5rem; align-items: center; }
+  @media (max-width: 700px) { .venue-grid { grid-template-columns: 1fr; } }
+  .venue-grid h3 { font-size: 1.5rem; margin-bottom: 0.75rem; }
+  .venue-grid p { color: var(--ink-soft); margin-bottom: 1rem; }
+  .venue-note { background: var(--blush); border-radius: 6px; padding: 1.5rem 1.75rem; font-size: 0.95rem; }
+  .venue-note strong { font-weight: 500; }
+
+  /* ---------- RSVP form ---------- */
+  #rsvp { max-width: 760px; }
+  form {
+    background: #fff; border: 1px solid var(--line); border-radius: 8px;
+    padding: 2.5rem 2rem;
+  }
+  @media (max-width: 540px) { form { padding: 1.75rem 1.15rem; } }
+  fieldset { border: none; margin-bottom: 2.25rem; }
+  legend {
+    font-family: var(--serif); font-size: 1.35rem; color: var(--sage-dark);
+    margin-bottom: 1rem; padding-top: 0.5rem;
+  }
+  label { display: block; font-size: 0.85rem; letter-spacing: 0.08em; text-transform: uppercase; color: var(--ink-soft); margin-bottom: 0.35rem; }
+  input[type="text"], input[type="email"], input[type="tel"], select, textarea {
+    width: 100%; padding: 0.7rem 0.85rem; margin-bottom: 1.15rem;
+    border: 1px solid var(--line); border-radius: 4px;
+    font-family: var(--sans); font-size: 1rem; font-weight: 300;
+    color: var(--ink); background: var(--cream);
+  }
+  input:focus, select:focus, textarea:focus { outline: 2px solid var(--sage); outline-offset: 1px; border-color: var(--sage); }
+  textarea { resize: vertical; min-height: 90px; }
+  .row { display: grid; grid-template-columns: 1fr 1fr; gap: 0 1.25rem; }
+  @media (max-width: 540px) { .row { grid-template-columns: 1fr; } }
+
+  .choice-pills { display: flex; gap: 0.75rem; flex-wrap: wrap; margin-bottom: 1.15rem; }
+  .choice-pills input { position: absolute; opacity: 0; pointer-events: none; }
+  .choice-pills label {
+    margin: 0; cursor: pointer; text-transform: none; letter-spacing: 0.02em;
+    font-size: 0.95rem; color: var(--ink);
+    border: 1px solid var(--line); border-radius: 999px;
+    padding: 0.55rem 1.4rem; background: var(--cream); transition: all 0.2s ease;
+  }
+  .choice-pills input:checked + label { background: var(--sage-dark); border-color: var(--sage-dark); color: #fff; }
+  .choice-pills input:focus-visible + label { outline: 2px solid var(--sage); outline-offset: 2px; }
+
+  .guest-card {
+    border: 1px dashed var(--line); border-radius: 6px;
+    padding: 1.5rem 1.25rem 0.5rem; margin-bottom: 1.25rem; background: var(--cream);
+  }
+  .guest-card h3 {
+    font-size: 1.15rem; color: var(--sage-dark); margin-bottom: 1rem;
+    display: flex; justify-content: space-between; align-items: baseline;
+  }
+  .guest-card h3 .tag { font-family: var(--sans); font-size: 0.7rem; letter-spacing: 0.15em; text-transform: uppercase; color: var(--gold); }
+  .menu-group { margin-bottom: 1rem; }
+  .menu-group > span { display: block; font-size: 0.8rem; letter-spacing: 0.1em; text-transform: uppercase; color: var(--ink-soft); margin-bottom: 0.5rem; }
+  .menu-option { display: flex; align-items: flex-start; gap: 0.6rem; padding: 0.45rem 0; }
+  .menu-option input { margin-top: 0.35rem; accent-color: var(--sage-dark); flex: none; }
+  .menu-option label { margin: 0; text-transform: none; letter-spacing: 0; font-size: 0.98rem; color: var(--ink); cursor: pointer; }
+  .menu-option label em { display: block; font-style: normal; font-size: 0.85rem; color: var(--ink-soft); }
+
+  .allergy-box { background: var(--blush); border-radius: 6px; padding: 1.25rem 1.25rem 0.25rem; margin-bottom: 1rem; }
+  .allergy-box p { font-size: 0.88rem; color: var(--ink-soft); margin-bottom: 0.9rem; }
+  .allergy-checks { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 0.25rem 1rem; margin-bottom: 1rem; }
+  .allergy-checks .menu-option { padding: 0.2rem 0; }
+
+  .form-status { margin-top: 1.25rem; padding: 1rem 1.25rem; border-radius: 6px; font-size: 0.95rem; display: none; }
+  .form-status.ok { display: block; background: #edf3ea; border: 1px solid var(--sage); color: var(--sage-dark); }
+  .form-status.err { display: block; background: #f9ecec; border: 1px solid #cf8b8b; color: #8c4a4a; }
+
+  footer {
+    text-align: center; padding: 3.5rem 1.5rem;
+    border-top: 1px solid var(--line); color: var(--ink-soft); font-size: 0.9rem;
+  }
+  footer .monogram { font-family: var(--serif); font-size: 2rem; color: var(--sage-dark); margin-bottom: 0.5rem; }
+</style>
+</head>
+<body>
+
+<nav>
+  <div class="inner">
+    <a class="monogram" href="#top">E &amp; J</a>
+    <ul>
+      <li class="hide-sm"><a href="#day">The Day</a></li>
+      <li class="hide-sm"><a href="#venue">Venue</a></li>
+      <li><a href="#menu">Menu</a></li>
+      <li><a class="cta" href="#rsvp">RSVP</a></li>
+    </ul>
+  </div>
+</nav>
+
+<header class="hero" id="top">
+  <p class="eyebrow">Together with their families</p>
+  <h1>Emma <span class="amp">&amp;</span> James</h1>
+  <div class="divider"></div>
+  <p class="date">Saturday 12th June 2027</p>
+  <p class="place">The Old Barn · Little Milton · Oxfordshire</p>
+  <a class="btn solid" href="#rsvp">RSVP by 12th March 2027</a>
+</header>
+
+<section id="day">
+  <div class="section-head">
+    <p class="eyebrow">Order of the day</p>
+    <h2>The Day</h2>
+  </div>
+  <div class="schedule">
+    <div class="card">
+      <p class="time">1:00pm</p>
+      <h3>Ceremony</h3>
+      <p>Please be seated by 12:45pm. Confetti (dried petals only!) very welcome afterwards.</p>
+    </div>
+    <div class="card">
+      <p class="time">2:00pm</p>
+      <h3>Drinks Reception</h3>
+      <p>Fizz, lawn games and photographs in the courtyard garden.</p>
+    </div>
+    <div class="card">
+      <p class="time">4:30pm</p>
+      <h3>Wedding Breakfast</h3>
+      <p>A three-course meal — choose your dishes when you RSVP below.</p>
+    </div>
+    <div class="card">
+      <p class="time">7:30pm</p>
+      <h3>Evening Party</h3>
+      <p>First dance, live band and dancing until midnight. Evening food served at 9pm.</p>
+    </div>
+  </div>
+</section>
+
+<section id="venue">
+  <div class="section-head">
+    <p class="eyebrow">Where to find us</p>
+    <h2>The Venue</h2>
+  </div>
+  <div class="venue-grid">
+    <div>
+      <h3>The Old Barn</h3>
+      <p>Little Milton, Oxfordshire, OX44 7PU. Free parking on site. The ceremony and reception both take place at the same venue, so once you're here you can relax for the day.</p>
+      <a class="btn" href="https://maps.google.com/?q=Little+Milton,+Oxfordshire" target="_blank" rel="noopener">Open in Maps</a>
+    </div>
+    <div class="venue-note">
+      <p><strong>Staying over?</strong> We've reserved a block of rooms at The Plough Inn (5 minutes away) — quote "Emma &amp; James" when booking. Taxis back to Oxford are best pre-booked; we'll share numbers nearer the time.</p>
+    </div>
+  </div>
+</section>
+
+<section id="menu">
+  <div class="section-head">
+    <p class="eyebrow">Wedding breakfast</p>
+    <h2>The Menu</h2>
+  </div>
+  <div class="venue-grid">
+    <div class="card" style="text-align:left">
+      <h3>Starters</h3>
+      <p>Roasted tomato &amp; basil soup <em>(vg, gf)</em><br>
+         Smoked salmon &amp; dill crème fraîche tart<br>
+         Whipped goat's cheese, beetroot &amp; candied walnuts <em>(v)</em></p>
+    </div>
+    <div class="card" style="text-align:left">
+      <h3>Mains</h3>
+      <p>Roast Oxfordshire beef, Yorkshire pudding &amp; red wine jus<br>
+         Pan-roasted chicken breast, fondant potato &amp; tarragon cream<br>
+         Wild mushroom &amp; chestnut wellington <em>(vg)</em></p>
+    </div>
+    <div class="card" style="text-align:left">
+      <h3>Desserts</h3>
+      <p>Sticky toffee pudding &amp; vanilla ice cream <em>(v)</em><br>
+         Lemon posset with raspberries &amp; shortbread <em>(v, gf option)</em><br>
+         Dark chocolate &amp; salted caramel torte <em>(vg, gf)</em></p>
+    </div>
+  </div>
+  <p style="text-align:center; margin-top:2rem; color:var(--ink-soft); font-size:0.95rem;">
+    Children's menu and any adapted dishes are no trouble at all — just tell us about
+    allergies and dietary requirements when you RSVP and our caterers will take care of it.
+  </p>
+</section>
+
+<section id="rsvp">
+  <div class="section-head">
+    <p class="eyebrow">Kindly reply by 12th March 2027</p>
+    <h2>RSVP</h2>
+  </div>
+
+  <form id="rsvp-form" novalidate>
+    <fieldset>
+      <legend>Your details</legend>
+      <div class="row">
+        <div>
+          <label for="contact-name">Your name *</label>
+          <input type="text" id="contact-name" name="contact_name" autocomplete="name" required>
+        </div>
+        <div>
+          <label for="contact-email">Email *</label>
+          <input type="email" id="contact-email" name="contact_email" autocomplete="email" required>
+        </div>
+      </div>
+      <label for="contact-phone">Phone (optional)</label>
+      <input type="tel" id="contact-phone" name="contact_phone" autocomplete="tel">
+    </fieldset>
+
+    <fieldset>
+      <legend>Will you be joining us?</legend>
+      <div class="choice-pills" role="radiogroup" aria-label="Attending">
+        <input type="radio" id="attend-yes" name="attending" value="Joyfully accepts" checked>
+        <label for="attend-yes">Joyfully accept 🎉</label>
+        <input type="radio" id="attend-no" name="attending" value="Regretfully declines">
+        <label for="attend-no">Regretfully decline</label>
+      </div>
+      <div id="party-size-wrap">
+        <label for="party-size">Number of guests in your party (including you)</label>
+        <select id="party-size" name="party_size">
+          <option value="1">1</option>
+          <option value="2">2</option>
+          <option value="3">3</option>
+          <option value="4">4</option>
+          <option value="5">5</option>
+          <option value="6">6</option>
+        </select>
+      </div>
+    </fieldset>
+
+    <fieldset id="guests-fieldset">
+      <legend>Menu choices &amp; allergies</legend>
+      <p style="font-size:0.9rem; color:var(--ink-soft); margin-bottom:1.25rem;">
+        Please complete one section per guest so the kitchen knows exactly who is eating what.
+      </p>
+      <div id="guest-cards"></div>
+    </fieldset>
+
+    <fieldset id="extras-fieldset">
+      <legend>A few extras</legend>
+      <label for="song">Song that will get you on the dance floor</label>
+      <input type="text" id="song" name="song_request" placeholder="Artist — Song">
+      <label for="message">Anything else we should know?</label>
+      <textarea id="message" name="message" placeholder="Travel plans, accessibility needs, a note for us…"></textarea>
+    </fieldset>
+
+    <button type="submit" class="btn solid" id="submit-btn">Send RSVP</button>
+    <div class="form-status" id="form-status" role="status"></div>
+  </form>
+</section>
+
+<footer>
+  <div class="monogram">E &amp; J</div>
+  <p>12.06.2027 · The Old Barn, Oxfordshire</p>
+  <p>Questions? Email us at <a href="mailto:emmaandjames@example.com" style="color:var(--sage-dark)">emmaandjames@example.com</a></p>
+</footer>
+
+<script>
+/* ============================================================
+   CONFIG — how RSVPs reach you.
+
+   Option A (recommended): create a free form at https://formspree.io,
+   then paste your endpoint below, e.g. "https://formspree.io/f/abcdwxyz".
+   Submissions will arrive in your inbox / Formspree dashboard as
+   structured data you can export to a spreadsheet.
+
+   Option B (default fallback): leave FORM_ENDPOINT empty and guests'
+   email apps will open with a pre-filled RSVP addressed to RSVP_EMAIL.
+   ============================================================ */
+const FORM_ENDPOINT = "";
+const RSVP_EMAIL = "emmaandjames@example.com";
+
+const MENU = {
+  starter: [
+    { value: "Tomato & basil soup (vg, gf)", label: "Roasted tomato & basil soup", note: "vegan, gluten free" },
+    { value: "Smoked salmon tart", label: "Smoked salmon & dill crème fraîche tart", note: "" },
+    { value: "Goat's cheese & beetroot (v)", label: "Whipped goat's cheese, beetroot & candied walnuts", note: "vegetarian" },
+  ],
+  main: [
+    { value: "Roast beef", label: "Roast Oxfordshire beef, Yorkshire pudding & red wine jus", note: "" },
+    { value: "Chicken breast", label: "Pan-roasted chicken breast, fondant potato & tarragon cream", note: "" },
+    { value: "Mushroom wellington (vg)", label: "Wild mushroom & chestnut wellington", note: "vegan" },
+  ],
+  dessert: [
+    { value: "Sticky toffee pudding (v)", label: "Sticky toffee pudding & vanilla ice cream", note: "vegetarian" },
+    { value: "Lemon posset (v)", label: "Lemon posset with raspberries & shortbread", note: "vegetarian, gluten-free option" },
+    { value: "Chocolate torte (vg, gf)", label: "Dark chocolate & salted caramel torte", note: "vegan, gluten free" },
+  ],
+};
+
+const COMMON_ALLERGENS = ["Gluten", "Dairy", "Eggs", "Nuts", "Peanuts", "Shellfish", "Fish", "Soya", "Sesame"];
+
+const form = document.getElementById("rsvp-form");
+const guestCards = document.getElementById("guest-cards");
+const partySize = document.getElementById("party-size");
+const partySizeWrap = document.getElementById("party-size-wrap");
+const guestsFieldset = document.getElementById("guests-fieldset");
+const extrasFieldset = document.getElementById("extras-fieldset");
+const statusBox = document.getElementById("form-status");
+const submitBtn = document.getElementById("submit-btn");
+
+function menuGroup(guestIdx, course, title) {
+  const options = MENU[course].map((opt, i) => `
+    <div class="menu-option">
+      <input type="radio" id="g${guestIdx}-${course}-${i}" name="guest${guestIdx}_${course}" value="${opt.value}" ${i === 0 ? "required" : ""}>
+      <label for="g${guestIdx}-${course}-${i}">${opt.label}${opt.note ? `<em>${opt.note}</em>` : ""}</label>
+    </div>`).join("");
+  return `<div class="menu-group"><span>${title} *</span>${options}</div>`;
+}
+
+function allergenChecks(guestIdx) {
+  return COMMON_ALLERGENS.map((a, i) => `
+    <div class="menu-option">
+      <input type="checkbox" id="g${guestIdx}-allergen-${i}" name="guest${guestIdx}_allergens" value="${a}">
+      <label for="g${guestIdx}-allergen-${i}">${a}</label>
+    </div>`).join("");
+}
+
+function renderGuestCards(count) {
+  guestCards.innerHTML = "";
+  for (let i = 1; i <= count; i++) {
+    const card = document.createElement("div");
+    card.className = "guest-card";
+    card.innerHTML = `
+      <h3>Guest ${i} <span class="tag">${i === 1 ? "that's you" : ""}</span></h3>
+      <label for="g${i}-name">Full name *</label>
+      <input type="text" id="g${i}-name" name="guest${i}_name" required>
+      ${menuGroup(i, "starter", "Starter")}
+      ${menuGroup(i, "main", "Main")}
+      ${menuGroup(i, "dessert", "Dessert")}
+      <div class="allergy-box">
+        <p><strong>Allergies &amp; dietary requirements</strong> — tick any that apply and add detail below (e.g. severity, coeliac, halal, pregnancy).</p>
+        <div class="allergy-checks">${allergenChecks(i)}</div>
+        <label for="g${i}-allergy-notes" style="text-transform:none; letter-spacing:0;">Other allergies / dietary notes</label>
+        <textarea id="g${i}-allergy-notes" name="guest${i}_allergy_notes" rows="2" placeholder="e.g. severe peanut allergy (carries EpiPen), no alcohol in food"></textarea>
+      </div>`;
+    guestCards.appendChild(card);
+  }
+  // Keep guest 1's name in sync with the contact name if untouched
+  const contactName = document.getElementById("contact-name");
+  const g1 = document.getElementById("g1-name");
+  if (g1 && contactName.value && !g1.value) g1.value = contactName.value;
+}
+
+function isAttending() {
+  return document.getElementById("attend-yes").checked;
+}
+
+function updateAttendingUI() {
+  const show = isAttending();
+  guestsFieldset.style.display = show ? "" : "none";
+  extrasFieldset.style.display = show ? "" : "none";
+  partySizeWrap.style.display = show ? "" : "none";
+  guestCards.querySelectorAll("input, textarea").forEach(el => (el.disabled = !show));
+}
+
+partySize.addEventListener("change", () => renderGuestCards(Number(partySize.value)));
+document.querySelectorAll('input[name="attending"]').forEach(el => el.addEventListener("change", updateAttendingUI));
+document.getElementById("contact-name").addEventListener("blur", () => {
+  const g1 = document.getElementById("g1-name");
+  if (g1 && !g1.value) g1.value = document.getElementById("contact-name").value;
+});
+
+renderGuestCards(1);
+updateAttendingUI();
+
+function collectRsvp() {
+  const data = {
+    contact_name: form.contact_name.value.trim(),
+    contact_email: form.contact_email.value.trim(),
+    contact_phone: form.contact_phone.value.trim(),
+    attending: form.attending.value,
+  };
+  if (isAttending()) {
+    const count = Number(partySize.value);
+    data.party_size = count;
+    data.guests = [];
+    for (let i = 1; i <= count; i++) {
+      const allergens = [...form.querySelectorAll(`input[name="guest${i}_allergens"]:checked`)].map(el => el.value);
+      const pick = course => (form.querySelector(`input[name="guest${i}_${course}"]:checked`) || {}).value || "";
+      data.guests.push({
+        name: form[`guest${i}_name`].value.trim(),
+        starter: pick("starter"),
+        main: pick("main"),
+        dessert: pick("dessert"),
+        allergens: allergens.join(", "),
+        allergy_notes: form[`guest${i}_allergy_notes`].value.trim(),
+      });
+    }
+    data.song_request = form.song_request.value.trim();
+    data.message = form.message.value.trim();
+  }
+  return data;
+}
+
+function validate() {
+  if (!form.contact_name.value.trim() || !form.contact_email.checkValidity()) {
+    showStatus("err", "Please fill in your name and a valid email address.");
+    return false;
+  }
+  if (isAttending()) {
+    const count = Number(partySize.value);
+    for (let i = 1; i <= count; i++) {
+      if (!form[`guest${i}_name`].value.trim()) {
+        showStatus("err", `Please add a name for guest ${i}.`);
+        return false;
+      }
+      for (const course of ["starter", "main", "dessert"]) {
+        if (!form.querySelector(`input[name="guest${i}_${course}"]:checked`)) {
+          showStatus("err", `Please choose a ${course} for guest ${i}.`);
+          return false;
+        }
+      }
+    }
+  }
+  return true;
+}
+
+function showStatus(kind, msg) {
+  statusBox.className = "form-status " + kind;
+  statusBox.textContent = msg;
+  statusBox.scrollIntoView({ behavior: "smooth", block: "nearest" });
+}
+
+function toEmailBody(data) {
+  const lines = [
+    `RSVP from ${data.contact_name}`,
+    `Email: ${data.contact_email}`,
+    data.contact_phone ? `Phone: ${data.contact_phone}` : "",
+    `Attending: ${data.attending}`,
+    "",
+  ];
+  (data.guests || []).forEach((g, i) => {
+    lines.push(
+      `--- Guest ${i + 1}: ${g.name} ---`,
+      `Starter: ${g.starter}`,
+      `Main: ${g.main}`,
+      `Dessert: ${g.dessert}`,
+      `Allergens: ${g.allergens || "none ticked"}`,
+      g.allergy_notes ? `Allergy notes: ${g.allergy_notes}` : "Allergy notes: none",
+      ""
+    );
+  });
+  if (data.song_request) lines.push(`Song request: ${data.song_request}`);
+  if (data.message) lines.push(`Message: ${data.message}`);
+  return lines.filter(l => l !== null).join("\n");
+}
+
+form.addEventListener("submit", async (e) => {
+  e.preventDefault();
+  statusBox.className = "form-status";
+  if (!validate()) return;
+  const data = collectRsvp();
+
+  if (!FORM_ENDPOINT) {
+    // Fallback: open the guest's email app with everything pre-filled.
+    const subject = encodeURIComponent(`Wedding RSVP — ${data.contact_name}`);
+    const body = encodeURIComponent(toEmailBody(data));
+    window.location.href = `mailto:${RSVP_EMAIL}?subject=${subject}&body=${body}`;
+    showStatus("ok", "We've opened your email app with your RSVP filled in — just press send! If nothing opened, email us directly at " + RSVP_EMAIL + ".");
+    return;
+  }
+
+  submitBtn.disabled = true;
+  try {
+    const res = await fetch(FORM_ENDPOINT, {
+      method: "POST",
+      headers: { "Content-Type": "application/json", "Accept": "application/json" },
+      body: JSON.stringify({ ...data, guests: undefined, guests_details: toEmailBody(data), _subject: `Wedding RSVP — ${data.contact_name}` }),
+    });
+    if (!res.ok) throw new Error("Bad response");
+    form.reset();
+    renderGuestCards(1);
+    updateAttendingUI();
+    showStatus("ok", "Thank you — your RSVP has been sent! We can't wait to celebrate with you. 💛");
+  } catch {
+    showStatus("err", "Something went wrong sending your RSVP. Please try again, or email us at " + RSVP_EMAIL + ".");
+  } finally {
+    submitBtn.disabled = false;
+  }
+});
+</script>
+</body>
+</html>
