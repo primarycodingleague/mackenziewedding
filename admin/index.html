@@ -50,7 +50,6 @@
   .card { background: #fff; border: 1px solid var(--line); border-radius: 8px; padding: 1.5rem; margin-bottom: 1.25rem; }
   .muted { color: var(--ink-soft); font-size: 0.9rem; }
 
-  /* Login */
   .login-wrap { max-width: 400px; margin: 8vh auto; }
   .login-wrap h2 { text-align: center; margin-bottom: 0.35rem; color: var(--sage-dark); font-size: 1.8rem; }
   .login-wrap p.muted { text-align: center; margin-bottom: 1.5rem; }
@@ -68,7 +67,6 @@
   .error-box { background: #f9ecec; border: 1px solid #cf8b8b; color: #8c4a4a; }
   .ok-box { background: #edf3ea; border: 1px solid var(--sage); color: var(--sage-dark); }
 
-  /* Stats */
   .stats { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 1rem; margin-bottom: 1.25rem; }
   .stat { background: #fff; border: 1px solid var(--line); border-radius: 8px; padding: 1.1rem 1.25rem; }
   .stat .num { font-family: var(--serif); font-size: 2.1rem; color: var(--sage-dark); line-height: 1.15; }
@@ -79,9 +77,12 @@
   td { padding: 0.6rem; border-bottom: 1px solid var(--line); vertical-align: top; }
   tr.rsvp-row { cursor: pointer; }
   tr.rsvp-row:hover td { background: var(--cream); }
-  .pill { display: inline-block; border-radius: 999px; padding: 0.1rem 0.7rem; font-size: 0.78rem; }
+  .pill { display: inline-block; border-radius: 999px; padding: 0.1rem 0.7rem; font-size: 0.78rem; white-space: nowrap; }
   .pill.yes { background: #edf3ea; color: var(--sage-dark); border: 1px solid var(--sage); }
   .pill.no { background: var(--blush); color: var(--danger); border: 1px solid #d8b3b3; }
+  .pill.day { background: #eef1e6; color: var(--sage-dark); border: 1px solid var(--sage); }
+  .pill.evening { background: #f3ecdf; color: var(--gold); border: 1px solid var(--gold); }
+  .pill.waiting { background: var(--cream); color: var(--ink-soft); border: 1px solid var(--line); }
   .guest-detail { background: var(--cream); border-radius: 6px; padding: 0.9rem 1rem; margin: 0.35rem 0; }
   .guest-detail strong { font-weight: 500; }
   .guest-detail .allergy { color: var(--danger); font-weight: 400; }
@@ -95,17 +96,26 @@
   .allergy-item { padding: 0.55rem 0; border-bottom: 1px dashed var(--line); font-size: 0.93rem; }
   .allergy-item strong { font-weight: 500; }
 
-  /* Menu editor */
   .menu-course h3 { color: var(--sage-dark); margin: 1rem 0 0.5rem; font-size: 1.2rem; }
   .menu-row { display: grid; grid-template-columns: 2fr 1fr auto auto; gap: 0.6rem; align-items: start; margin-bottom: 0.25rem; }
   .menu-row input { margin-bottom: 0.35rem; }
-  .menu-row .btn { margin-top: 0.15rem; }
   @media (max-width: 640px) { .menu-row { grid-template-columns: 1fr; } }
 
   .sched-row { display: grid; grid-template-columns: 110px 1fr 2fr auto; gap: 0.6rem; align-items: start; }
   @media (max-width: 640px) { .sched-row { grid-template-columns: 1fr; } }
   .row2 { display: grid; grid-template-columns: 1fr 1fr; gap: 0 1.25rem; }
   @media (max-width: 640px) { .row2 { grid-template-columns: 1fr; } }
+  .row3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 0 1.25rem; }
+  @media (max-width: 720px) { .row3 { grid-template-columns: 1fr; } }
+
+  /* Guest list */
+  .hh-card { border: 1px solid var(--line); border-radius: 8px; padding: 1.1rem 1.25rem; margin-bottom: 0.9rem; background: #fff; }
+  .hh-head { display: flex; justify-content: space-between; align-items: baseline; gap: 0.75rem; flex-wrap: wrap; }
+  .hh-head h3 { font-size: 1.25rem; color: var(--sage-dark); }
+  .hh-guests { margin: 0.35rem 0 0.6rem; font-size: 0.95rem; }
+  .hh-meta { display: flex; gap: 0.5rem; align-items: center; flex-wrap: wrap; }
+  .hh-meta code { background: var(--cream); border: 1px solid var(--line); border-radius: 4px; padding: 0.15rem 0.55rem; letter-spacing: 0.15em; font-size: 0.88rem; }
+  .hh-actions { display: flex; gap: 0.5rem; flex-wrap: wrap; margin-top: 0.5rem; }
 
   .setup-steps li { margin: 0.6rem 0 0.6rem 1.25rem; }
   code { background: var(--blush); border-radius: 4px; padding: 0.1rem 0.4rem; font-size: 0.88em; }
@@ -123,7 +133,6 @@
 </header>
 
 <main>
-  <!-- Setup instructions (only when config.js is empty) -->
   <div id="setup-view" style="display:none">
     <div class="card">
       <h2>One-time setup needed</h2>
@@ -141,7 +150,6 @@
     </div>
   </div>
 
-  <!-- Login -->
   <div id="login-view" class="login-wrap" style="display:none">
     <h2>Hello, you two 💛</h2>
     <p class="muted">Sign in to see RSVPs and edit the site.</p>
@@ -157,12 +165,13 @@
     </div>
   </div>
 
-  <!-- Dashboard -->
   <div id="dash-view" style="display:none">
     <div class="tabs">
       <button data-tab="responses" class="active">Responses</button>
+      <button data-tab="guests">Guest list</button>
       <button data-tab="menu">Menu</button>
       <button data-tab="details">Site details</button>
+      <button data-tab="publish">Publishing</button>
     </div>
     <div class="error-box" id="dash-error"></div>
     <div class="ok-box" id="dash-ok"></div>
@@ -177,11 +186,11 @@
         </div>
         <div class="table-scroll">
           <table id="rsvp-table">
-            <thead><tr><th>Received</th><th>Contact</th><th>Attending</th><th>Party</th><th></th></tr></thead>
+            <thead><tr><th>Received</th><th>Household</th><th>Contact</th><th>Attending</th><th>Coming</th><th></th></tr></thead>
             <tbody></tbody>
           </table>
         </div>
-        <p class="muted" id="no-rsvps" style="display:none; margin-top:0.75rem">No responses yet — share the site with your guests!</p>
+        <p class="muted" id="no-rsvps" style="display:none; margin-top:0.75rem">No responses yet — share the invite links with your guests!</p>
       </div>
       <div class="card">
         <h2 style="font-size:1.3rem; margin-bottom:0.75rem">Menu tallies</h2>
@@ -190,6 +199,26 @@
       <div class="card">
         <h2 style="font-size:1.3rem; margin-bottom:0.75rem">⚠️ Allergies &amp; dietary requirements</h2>
         <div id="allergy-report"></div>
+      </div>
+    </div>
+
+    <!-- Guest list tab -->
+    <div id="tab-guests" style="display:none">
+      <div class="card">
+        <div style="display:flex; justify-content:space-between; align-items:center; gap:1rem; flex-wrap:wrap; margin-bottom:0.5rem">
+          <h2 style="font-size:1.3rem">Households</h2>
+          <div style="display:flex; gap:0.5rem; flex-wrap:wrap">
+            <button class="btn small" id="links-csv-btn">Download all invite links (CSV)</button>
+            <button class="btn small solid" id="add-hh-btn">+ Add household</button>
+          </div>
+        </div>
+        <p class="muted" style="margin-bottom:1rem">
+          Each household gets a personal invite link — anyone in the family can open it and RSVP for
+          the whole party. "Full day" and "Evening" control which version of the site they see.
+        </p>
+        <div id="hh-form-holder"></div>
+        <div id="hh-list"></div>
+        <p class="muted" id="no-hh" style="display:none">No households yet — add your first one, or leave the guest list empty and keep RSVPs open to anyone (see Publishing).</p>
       </div>
     </div>
 
@@ -202,7 +231,7 @@
           Guests who already responded keep their original choices.
         </p>
         <div id="menu-editor"></div>
-        <div style="margin-top:1.25rem; display:flex; gap:0.75rem">
+        <div style="margin-top:1.25rem">
           <button class="btn solid" id="save-menu-btn">Save menu</button>
         </div>
       </div>
@@ -228,7 +257,7 @@
         <label>Location line under the date</label>
         <input id="s-place" placeholder="The Old Barn · Little Milton · Oxfordshire">
         <div class="row2">
-          <div><label>Max guests per RSVP</label><input id="s-maxparty" type="number" min="1" max="12"></div>
+          <div><label>Max guests per open RSVP (no invite link)</label><input id="s-maxparty" type="number" min="1" max="12"></div>
         </div>
         <h3 style="color:var(--sage-dark); margin:1rem 0 0.75rem">Venue</h3>
         <div class="row2">
@@ -249,6 +278,77 @@
         </div>
       </div>
     </div>
+
+    <!-- Publishing tab -->
+    <div id="tab-publish" style="display:none">
+      <div class="card">
+        <h2 style="font-size:1.3rem">RSVP</h2>
+        <p class="muted" style="margin:0.35rem 0 1rem">Control when replies open and who can send them.</p>
+        <div class="row3">
+          <div>
+            <label>RSVP status</label>
+            <select id="p-rsvp-open">
+              <option value="yes">Open</option>
+              <option value="no">Closed</option>
+            </select>
+          </div>
+          <div>
+            <label>Open for</label>
+            <select id="p-rsvp-audience">
+              <option value="everyone">Everyone invited</option>
+              <option value="day">Full-day guests only</option>
+              <option value="evening">Evening guests only</option>
+            </select>
+          </div>
+          <div>
+            <label>Who can reply</label>
+            <select id="p-rsvp-mode">
+              <option value="code">Invite link / code only</option>
+              <option value="open">Anyone (no code needed)</option>
+            </select>
+          </div>
+        </div>
+        <label>Message shown while closed (optional)</label>
+        <textarea id="p-rsvp-closed-msg" rows="2" placeholder="RSVPs open in the spring — we can't wait!"></textarea>
+      </div>
+      <div class="card">
+        <h2 style="font-size:1.3rem">Section visibility</h2>
+        <p class="muted" style="margin:0.35rem 0 1rem">
+          Choose who sees each part of the site. "Full-day guests" means people opening a full-day invite
+          link; visitors without a link only ever see sections set to Everyone.
+        </p>
+        <div class="row3" id="vis-controls">
+          <div>
+            <label>Order of the day</label>
+            <select id="p-vis-schedule">
+              <option value="everyone">Everyone</option>
+              <option value="day">Full-day guests</option>
+              <option value="evening">Evening guests</option>
+              <option value="hidden">Hidden</option>
+            </select>
+          </div>
+          <div>
+            <label>Venue</label>
+            <select id="p-vis-venue">
+              <option value="everyone">Everyone</option>
+              <option value="day">Full-day guests</option>
+              <option value="evening">Evening guests</option>
+              <option value="hidden">Hidden</option>
+            </select>
+          </div>
+          <div>
+            <label>Menu (and menu choices in the RSVP form)</label>
+            <select id="p-vis-menu">
+              <option value="everyone">Everyone</option>
+              <option value="day">Full-day guests</option>
+              <option value="evening">Evening guests</option>
+              <option value="hidden">Hidden</option>
+            </select>
+          </div>
+        </div>
+      </div>
+      <button class="btn solid" id="save-publish-btn">Save publishing settings</button>
+    </div>
   </div>
 </main>
 
@@ -259,6 +359,9 @@ const URL_ = (CFG.SUPABASE_URL || "").replace(/\/$/, "");
 const KEY = CFG.SUPABASE_ANON_KEY || "";
 const CONFIGURED = !!(URL_ && KEY);
 const COURSES = [["starter", "Starters"], ["main", "Mains"], ["dessert", "Desserts"]];
+const SITE_URL = location.origin === "null" || location.protocol === "file:"
+  ? "https://mackenziewedding.co.uk/"
+  : location.origin + location.pathname.replace(/admin\/?(index\.html)?$/i, "");
 const $ = id => document.getElementById(id);
 const esc = s => String(s ?? "").replace(/[&<>"']/g, c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]));
 
@@ -326,45 +429,62 @@ function flash(kind, msg) {
 
 document.querySelectorAll(".tabs button").forEach(btn => btn.addEventListener("click", () => {
   document.querySelectorAll(".tabs button").forEach(b => b.classList.toggle("active", b === btn));
-  ["responses", "menu", "details"].forEach(t => $("tab-" + t).style.display = btn.dataset.tab === t ? "" : "none");
+  ["responses", "guests", "menu", "details", "publish"].forEach(t => $("tab-" + t).style.display = btn.dataset.tab === t ? "" : "none");
 }));
 
 /* ---------- State ---------- */
 let RSVPS = [];
-let MENU = [];      // rows {id?, course, label, note, sort, active, _deleted?}
-let SETTINGS = {};  // settings.data blob
-const DEFAULT_SCHEDULE = [{ time: "", title: "", desc: "" }];
+let MENU = [];
+let SETTINGS = {};
+let HOUSEHOLDS = [];
+
+const DEFAULT_VIS = { schedule: "everyone", venue: "everyone", menu: "everyone" };
+const DEFAULT_RSVP = { mode: "open", open: true, audience: "everyone", closed_message: "" };
 
 async function loadAll() {
-  const [rsvps, menu, settings] = await Promise.all([
+  const [rsvps, menu, settings, households] = await Promise.all([
     api("rsvps?select=*,rsvp_guests(*)&order=created_at.desc"),
     api("menu_items?select=*&order=course.asc,sort.asc"),
     api("settings?id=eq.1&select=data"),
+    api("households?select=*,household_guests(*)&order=name.asc"),
   ]);
   RSVPS = rsvps || [];
   MENU = (menu || []).map(m => ({ ...m }));
   SETTINGS = (settings && settings[0] && settings[0].data) || {};
+  HOUSEHOLDS = (households || []).map(h => ({ ...h, household_guests: (h.household_guests || []).sort((a, b) => a.sort - b.sort) }));
   renderResponses();
+  renderHouseholds();
   renderMenuEditor();
   renderSettingsForm();
+  renderPublishForm();
 }
+
+function householdName(id) {
+  const h = HOUSEHOLDS.find(h => h.id === id);
+  return h ? h.name : "";
+}
+
+function guestIsAttending(g) { return g.attending !== false; }
 
 /* ---------- Responses tab ---------- */
 function attendingGuests() {
-  return RSVPS.filter(r => r.attending).flatMap(r => (r.rsvp_guests || []).slice().sort((a, b) => a.sort - b.sort));
+  return RSVPS.filter(r => r.attending)
+    .flatMap(r => (r.rsvp_guests || []).filter(guestIsAttending))
+    .sort((a, b) => a.sort - b.sort);
 }
 
 function renderResponses() {
-  const attending = RSVPS.filter(r => r.attending);
   const declined = RSVPS.filter(r => !r.attending);
   const guests = attendingGuests();
   const withDietary = guests.filter(g => g.allergens || g.allergy_notes);
+  const notReplied = HOUSEHOLDS.filter(h => !RSVPS.some(r => r.household_id === h.id)).length;
 
   $("stats").innerHTML = [
     [RSVPS.length, "Responses"],
     [guests.length, "Guests attending"],
     [declined.length, "Declined"],
     [withDietary.length, "Dietary flags"],
+    ...(HOUSEHOLDS.length ? [[notReplied, "Households yet to reply"]] : []),
   ].map(([n, l]) => `<div class="stat"><div class="num">${n}</div><div class="lbl">${l}</div></div>`).join("");
 
   const tbody = $("rsvp-table").querySelector("tbody");
@@ -372,25 +492,29 @@ function renderResponses() {
     const date = new Date(r.created_at).toLocaleDateString("en-GB", { day: "numeric", month: "short" });
     const contact = `${esc(r.contact_name)}<br><span class="muted">${esc(r.contact_email)}${r.contact_phone ? " · " + esc(r.contact_phone) : ""}</span>`;
     const pill = r.attending ? '<span class="pill yes">Accepts</span>' : '<span class="pill no">Declines</span>';
-    const details = (r.rsvp_guests || []).slice().sort((a, b) => a.sort - b.sort).map(g => `
+    const hh = r.household_id ? esc(householdName(r.household_id)) : '<span class="muted">—</span>';
+    const guestsSorted = (r.rsvp_guests || []).slice().sort((a, b) => a.sort - b.sort);
+    const coming = guestsSorted.filter(guestIsAttending).length;
+    const details = guestsSorted.map(g => `
       <div class="guest-detail">
-        <strong>${esc(g.name)}</strong><br>
-        ${esc(g.starter)} → ${esc(g.main)} → ${esc(g.dessert)}<br>
-        ${(g.allergens || g.allergy_notes)
+        <strong>${esc(g.name)}</strong> ${guestIsAttending(g) ? "" : '<span class="pill no">not coming</span>'}<br>
+        ${guestIsAttending(g) ? `${[g.starter, g.main, g.dessert].filter(Boolean).map(esc).join(" → ") || '<span class="muted">no menu choices</span>'}<br>` : ""}
+        ${guestIsAttending(g) && (g.allergens || g.allergy_notes)
           ? `<span class="allergy">⚠ ${esc([g.allergens, g.allergy_notes].filter(Boolean).join(" — "))}</span>`
-          : '<span class="muted">No allergies declared</span>'}
+          : (guestIsAttending(g) ? '<span class="muted">No allergies declared</span>' : "")}
       </div>`).join("") +
       (r.song ? `<p class="muted" style="margin-top:0.5rem">🎵 ${esc(r.song)}</p>` : "") +
       (r.message ? `<p class="muted" style="margin-top:0.25rem">💬 ${esc(r.message)}</p>` : "");
     return `
       <tr class="rsvp-row" data-i="${i}">
         <td style="white-space:nowrap">${date}</td>
+        <td>${hh}</td>
         <td>${contact}</td>
         <td>${pill}</td>
-        <td>${r.attending ? r.party_size : "—"}</td>
+        <td>${r.attending ? coming || r.party_size : "—"}</td>
         <td><button class="btn small danger" data-del="${r.id}">Delete</button></td>
       </tr>
-      <tr class="detail-row" style="display:none"><td colspan="5">${details || '<span class="muted">No guest details.</span>'}</td></tr>`;
+      <tr class="detail-row" style="display:none"><td colspan="6">${details || '<span class="muted">No guest details.</span>'}</td></tr>`;
   }).join("");
   $("no-rsvps").style.display = RSVPS.length ? "none" : "";
 
@@ -405,42 +529,195 @@ function renderResponses() {
       await api(`rsvps?id=eq.${btn.dataset.del}`, { method: "DELETE" });
       RSVPS = RSVPS.filter(r => r.id !== btn.dataset.del);
       renderResponses();
+      renderHouseholds();
       flash("ok", "RSVP deleted.");
     } catch (err) { flash("err", "Could not delete: " + err.message); }
   }));
 
+  const guestsAll = attendingGuests();
   $("tallies").innerHTML = COURSES.map(([course, title]) => {
     const counts = {};
-    guests.forEach(g => { const v = g[course]; if (v) counts[v] = (counts[v] || 0) + 1; });
+    const key = { Starters: "starter", Mains: "main", Desserts: "dessert" }[title];
+    guestsAll.forEach(g => { const v = g[key]; if (v) counts[v] = (counts[v] || 0) + 1; });
     const rows = Object.entries(counts).sort((a, b) => b[1] - a[1])
       .map(([label, n]) => `<div class="trow"><span>${esc(label)}</span><span class="n">${n}</span></div>`).join("");
     return `<div class="tally"><h3>${title}</h3>${rows || '<p class="muted">No choices yet.</p>'}</div>`;
   }).join("");
 
-  const flagged = attendingGuests().filter(g => g.allergens || g.allergy_notes);
+  const flagged = guestsAll.filter(g => g.allergens || g.allergy_notes);
   $("allergy-report").innerHTML = flagged.length
     ? flagged.map(g => `<div class="allergy-item"><strong>${esc(g.name)}</strong> — ${esc([g.allergens, g.allergy_notes].filter(Boolean).join(" · "))}</div>`).join("")
     : '<p class="muted">No allergies or dietary requirements declared so far.</p>';
 }
 
 $("export-btn").addEventListener("click", () => {
-  const headers = ["Party contact", "Email", "Phone", "Attending", "Guest", "Starter", "Main", "Dessert", "Allergens", "Allergy notes", "Song", "Message", "Received"];
+  const headers = ["Household", "Party contact", "Email", "Phone", "Party attending", "Guest", "Guest attending", "Starter", "Main", "Dessert", "Allergens", "Allergy notes", "Song", "Message", "Received"];
   const rows = [headers];
   RSVPS.forEach(r => {
-    const base = [r.contact_name, r.contact_email, r.contact_phone, r.attending ? "Yes" : "No"];
+    const base = [householdName(r.household_id), r.contact_name, r.contact_email, r.contact_phone, r.attending ? "Yes" : "No"];
     const tail = [r.song, r.message, new Date(r.created_at).toISOString().slice(0, 10)];
     const guests = (r.rsvp_guests || []).slice().sort((a, b) => a.sort - b.sort);
-    if (guests.length) guests.forEach(g => rows.push([...base, g.name, g.starter, g.main, g.dessert, g.allergens, g.allergy_notes, ...tail]));
-    else rows.push([...base, "", "", "", "", "", "", ...tail]);
+    if (guests.length) guests.forEach(g => rows.push([...base, g.name, guestIsAttending(g) ? "Yes" : "No", g.starter, g.main, g.dessert, g.allergens, g.allergy_notes, ...tail]));
+    else rows.push([...base, "", "", "", "", "", "", "", ...tail]);
   });
+  downloadCsv(rows, "wedding-rsvps.csv");
+});
+
+function downloadCsv(rows, filename) {
   const csv = rows.map(row => row.map(v => `"${String(v ?? "").replace(/"/g, '""')}"`).join(",")).join("\r\n");
   const a = document.createElement("a");
   a.href = "data:text/csv;charset=utf-8," + encodeURIComponent("﻿" + csv);
-  a.download = "wedding-rsvps.csv";
+  a.download = filename;
   a.click();
-});
+}
 
 $("refresh-btn").addEventListener("click", () => loadAll().catch(err => flash("err", err.message)));
+
+/* ---------- Guest list tab ---------- */
+const CODE_ALPHABET = "ABCDEFGHJKMNPQRSTUVWXYZ23456789";
+function newCode() {
+  let code = "";
+  const rand = crypto.getRandomValues(new Uint32Array(6));
+  for (let i = 0; i < 6; i++) code += CODE_ALPHABET[rand[i] % CODE_ALPHABET.length];
+  return HOUSEHOLDS.some(h => h.code === code) ? newCode() : code;
+}
+
+function newUuid() {
+  if (crypto.randomUUID) return crypto.randomUUID();
+  return "xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx".replace(/[xy]/g, c => {
+    const r = Math.random() * 16 | 0;
+    return (c === "x" ? r : (r & 0x3 | 0x8)).toString(16);
+  });
+}
+
+function inviteLink(code) { return `${SITE_URL}?inv=${code}`; }
+
+function renderHouseholds() {
+  const holder = $("hh-list");
+  $("no-hh").style.display = HOUSEHOLDS.length ? "none" : "";
+  holder.innerHTML = HOUSEHOLDS.map(h => {
+    const responded = RSVPS.some(r => r.household_id === h.id);
+    const names = h.household_guests.map(g => esc(g.name)).join(", ") || '<span class="muted">no guests added yet</span>';
+    return `<div class="hh-card" data-id="${h.id}">
+      <div class="hh-head">
+        <h3>${esc(h.name)}</h3>
+        <div class="hh-meta">
+          <span class="pill ${h.audience}">${h.audience === "day" ? "Full day" : "Evening"}</span>
+          ${responded ? '<span class="pill yes">Replied ✓</span>' : '<span class="pill waiting">Awaiting reply</span>'}
+        </div>
+      </div>
+      <p class="hh-guests">${names}</p>
+      <div class="hh-meta"><code>${esc(h.code)}</code><span class="muted" style="word-break:break-all">${esc(inviteLink(h.code))}</span></div>
+      <div class="hh-actions">
+        <button class="btn small" data-copy="${esc(h.code)}">Copy link</button>
+        <button class="btn small" data-edit="${h.id}">Edit</button>
+        <button class="btn small danger" data-delete="${h.id}">Delete</button>
+      </div>
+    </div>`;
+  }).join("");
+
+  holder.querySelectorAll("[data-copy]").forEach(btn => btn.addEventListener("click", async () => {
+    const link = inviteLink(btn.dataset.copy);
+    try { await navigator.clipboard.writeText(link); flash("ok", "Link copied: " + link); }
+    catch (e) { prompt("Copy this link:", link); }
+  }));
+  holder.querySelectorAll("[data-edit]").forEach(btn => btn.addEventListener("click", () => {
+    showHouseholdForm(HOUSEHOLDS.find(h => h.id === btn.dataset.edit));
+  }));
+  holder.querySelectorAll("[data-delete]").forEach(btn => btn.addEventListener("click", async () => {
+    const h = HOUSEHOLDS.find(h => h.id === btn.dataset.delete);
+    if (!confirm(`Delete "${h.name}" and its invite link? Any RSVPs they already sent are kept.`)) return;
+    try {
+      await api(`households?id=eq.${h.id}`, { method: "DELETE" });
+      HOUSEHOLDS = HOUSEHOLDS.filter(x => x.id !== h.id);
+      renderHouseholds();
+      renderResponses();
+      flash("ok", "Household deleted.");
+    } catch (err) { flash("err", "Could not delete: " + err.message); }
+  }));
+}
+
+$("add-hh-btn").addEventListener("click", () => showHouseholdForm(null));
+
+function showHouseholdForm(existing) {
+  const holder = $("hh-form-holder");
+  const guestsText = existing ? existing.household_guests.map(g => g.name).join("\n") : "";
+  holder.innerHTML = `<div class="hh-card" style="border-style:dashed">
+    <h3 style="color:var(--sage-dark); margin-bottom:0.75rem">${existing ? "Edit household" : "New household"}</h3>
+    <div class="row2">
+      <div><label>Household name (e.g. The Smith Family)</label><input id="hhf-name" value="${esc(existing?.name || "")}"></div>
+      <div><label>Invitation</label>
+        <select id="hhf-audience">
+          <option value="day" ${(!existing || existing.audience === "day") ? "selected" : ""}>Full day</option>
+          <option value="evening" ${existing?.audience === "evening" ? "selected" : ""}>Evening only</option>
+        </select>
+      </div>
+    </div>
+    <label>Guests — one name per line, in the order they should appear</label>
+    <textarea id="hhf-guests" rows="4" placeholder="Sarah Smith&#10;Tom Smith&#10;Millie Smith">${esc(guestsText)}</textarea>
+    <div style="display:flex; gap:0.5rem">
+      <button class="btn solid small" id="hhf-save">${existing ? "Save changes" : "Add household"}</button>
+      <button class="btn small" id="hhf-cancel">Cancel</button>
+    </div>
+  </div>`;
+  $("hhf-cancel").addEventListener("click", () => { holder.innerHTML = ""; });
+  const saveBtn = $("hhf-save");
+  saveBtn.addEventListener("click", async () => {
+    const name = $("hhf-name").value.trim();
+    const audienceVal = $("hhf-audience").value;
+    const guestNames = $("hhf-guests").value.split("\n").map(s => s.trim()).filter(Boolean);
+    if (!name) { flash("err", "Give the household a name."); return; }
+    if (!guestNames.length) { flash("err", "Add at least one guest."); return; }
+    saveBtn.disabled = true;
+    try {
+      if (existing) {
+        await api(`households?id=eq.${existing.id}`, {
+          method: "PATCH", headers: { Prefer: "return=minimal" },
+          body: JSON.stringify({ name, audience: audienceVal }),
+        });
+        await api(`household_guests?household_id=eq.${existing.id}`, { method: "DELETE" });
+        await api("household_guests", {
+          method: "POST", headers: { Prefer: "return=minimal" },
+          body: JSON.stringify(guestNames.map((n, i) => ({ household_id: existing.id, name: n, sort: i + 1 }))),
+        });
+      } else {
+        const id = newUuid();
+        const code = newCode();
+        await api("households", {
+          method: "POST", headers: { Prefer: "return=minimal" },
+          body: JSON.stringify([{ id, code, name, audience: audienceVal }]),
+        });
+        await api("household_guests", {
+          method: "POST", headers: { Prefer: "return=minimal" },
+          body: JSON.stringify(guestNames.map((n, i) => ({ household_id: id, name: n, sort: i + 1 }))),
+        });
+      }
+      holder.innerHTML = "";
+      const households = await api("households?select=*,household_guests(*)&order=name.asc");
+      HOUSEHOLDS = (households || []).map(h => ({ ...h, household_guests: (h.household_guests || []).sort((a, b) => a.sort - b.sort) }));
+      renderHouseholds();
+      renderResponses();
+      flash("ok", existing ? "Household updated." : `Household added — its invite link is ready to copy.`);
+    } catch (err) {
+      flash("err", "Could not save: " + err.message);
+    } finally {
+      saveBtn.disabled = false;
+    }
+  });
+}
+
+$("links-csv-btn").addEventListener("click", () => {
+  const rows = [["Household", "Guests", "Invitation", "Code", "Link", "Replied"]];
+  HOUSEHOLDS.forEach(h => rows.push([
+    h.name,
+    h.household_guests.map(g => g.name).join("; "),
+    h.audience === "day" ? "Full day" : "Evening",
+    h.code,
+    inviteLink(h.code),
+    RSVPS.some(r => r.household_id === h.id) ? "Yes" : "No",
+  ]));
+  downloadCsv(rows, "invite-links.csv");
+});
 
 /* ---------- Menu tab ---------- */
 function renderMenuEditor() {
@@ -457,7 +734,6 @@ function renderMenuEditor() {
     const course = btn.dataset.add;
     const item = { course, label: "", note: "", sort: MENU.filter(m => m.course === course).length + 1, active: true, _new: true, _key: Math.random().toString(36).slice(2) };
     MENU.push(item);
-    btn.insertAdjacentHTML("beforebegin", "");
     btn.previousElementSibling.insertAdjacentHTML("beforeend", menuRowHtml(item));
     wireMenuRow(btn.previousElementSibling.lastElementChild);
   }));
@@ -476,14 +752,10 @@ function menuRowHtml(m) {
   </div>`;
 }
 
-function findMenuItem(key) {
-  return MENU.find(m => (m.id || m._key) === key);
-}
-
 function wireMenuRow(row) {
   if (!row || row.dataset.wired) return;
   row.dataset.wired = "1";
-  const item = findMenuItem(row.dataset.key);
+  const item = MENU.find(m => (m.id || m._key) === row.dataset.key);
   row.querySelectorAll("[data-f]").forEach(input => input.addEventListener("input", () => {
     item[input.dataset.f] = input.type === "checkbox" ? input.checked : input.value;
   }));
@@ -540,7 +812,7 @@ function renderSettingsForm() {
   $("s-venue-desc").value = v.desc || "";
   $("s-venue-note").value = v.note || "";
   $("s-footnote").value = s.menu_footnote || "";
-  renderSchedEditor(Array.isArray(s.schedule) && s.schedule.length ? s.schedule : DEFAULT_SCHEDULE);
+  renderSchedEditor(Array.isArray(s.schedule) && s.schedule.length ? s.schedule : [{ time: "", title: "", desc: "" }]);
 }
 
 function renderSchedEditor(schedule) {
@@ -570,6 +842,14 @@ $("add-sched-btn").addEventListener("click", () => {
   wireSchedRows();
 });
 
+async function saveSettings(data) {
+  await api("settings?id=eq.1", {
+    method: "PATCH", headers: { Prefer: "return=minimal" },
+    body: JSON.stringify({ data, updated_at: new Date().toISOString() }),
+  });
+  SETTINGS = data;
+}
+
 $("save-settings-btn").addEventListener("click", async () => {
   const btn = $("save-settings-btn");
   btn.disabled = true;
@@ -579,6 +859,7 @@ $("save-settings-btn").addEventListener("click", async () => {
     desc: row.querySelector('[data-f="desc"]').value.trim(),
   })).filter(item => item.time || item.title || item.desc);
   const data = {
+    ...SETTINGS,
     couple: $("s-couple").value.trim(),
     monogram: $("s-monogram").value.trim(),
     tagline: $("s-tagline").value.trim(),
@@ -596,14 +877,50 @@ $("save-settings-btn").addEventListener("click", async () => {
     schedule,
     menu_footnote: $("s-footnote").value.trim(),
   };
-  Object.keys(data).forEach(k => { if (data[k] === "" ) delete data[k]; });
+  Object.keys(data).forEach(k => { if (data[k] === "") delete data[k]; });
   try {
-    await api("settings?id=eq.1", {
-      method: "PATCH", headers: { Prefer: "return=minimal" },
-      body: JSON.stringify({ data, updated_at: new Date().toISOString() }),
-    });
-    SETTINGS = data;
+    await saveSettings(data);
     flash("ok", "Saved — the guest site is updated.");
+  } catch (err) {
+    flash("err", "Could not save: " + err.message);
+  } finally {
+    btn.disabled = false;
+  }
+});
+
+/* ---------- Publishing tab ---------- */
+function renderPublishForm() {
+  const vis = { ...DEFAULT_VIS, ...(SETTINGS.visibility || {}) };
+  const rsvp = { ...DEFAULT_RSVP, ...(SETTINGS.rsvp || {}) };
+  $("p-rsvp-open").value = rsvp.open ? "yes" : "no";
+  $("p-rsvp-audience").value = rsvp.audience;
+  $("p-rsvp-mode").value = rsvp.mode;
+  $("p-rsvp-closed-msg").value = rsvp.closed_message || "";
+  $("p-vis-schedule").value = vis.schedule;
+  $("p-vis-venue").value = vis.venue;
+  $("p-vis-menu").value = vis.menu;
+}
+
+$("save-publish-btn").addEventListener("click", async () => {
+  const btn = $("save-publish-btn");
+  btn.disabled = true;
+  const data = {
+    ...SETTINGS,
+    visibility: {
+      schedule: $("p-vis-schedule").value,
+      venue: $("p-vis-venue").value,
+      menu: $("p-vis-menu").value,
+    },
+    rsvp: {
+      open: $("p-rsvp-open").value === "yes",
+      audience: $("p-rsvp-audience").value,
+      mode: $("p-rsvp-mode").value,
+      closed_message: $("p-rsvp-closed-msg").value.trim(),
+    },
+  };
+  try {
+    await saveSettings(data);
+    flash("ok", "Publishing settings saved — live on the guest site.");
   } catch (err) {
     flash("err", "Could not save: " + err.message);
   } finally {

@@ -74,6 +74,9 @@
   }
   .hero .place { margin-top: 0.4rem; letter-spacing: 0.18em; text-transform: uppercase; font-size: 0.85rem; color: var(--ink-soft); }
   .hero .btn { margin-top: 2.5rem; }
+  .hero .invite-hello {
+    margin-top: 1.5rem; font-family: var(--serif); font-style: italic; font-size: 1.15rem; color: var(--gold);
+  }
   .divider { width: 64px; height: 1px; background: var(--gold); margin: 1.75rem auto 0; position: relative; }
   .divider::after {
     content: '♥'; position: absolute; top: 50%; left: 50%; transform: translate(-50%, -55%);
@@ -120,11 +123,16 @@
   .menu-cards .dish em { display: block; font-style: normal; font-size: 0.82rem; color: var(--gold); }
 
   #rsvp { max-width: 760px; }
-  form.rsvp {
+  form.rsvp, .rsvp-card {
     background: #fff; border: 1px solid var(--line); border-radius: 8px;
     padding: 2.5rem 2rem;
   }
-  @media (max-width: 540px) { form.rsvp { padding: 1.75rem 1.15rem; } }
+  .rsvp-card { text-align: center; }
+  .rsvp-card h3 { font-size: 1.6rem; color: var(--sage-dark); margin-bottom: 0.6rem; }
+  .rsvp-card p { color: var(--ink-soft); }
+  .rsvp-card .code-entry { max-width: 320px; margin: 1.5rem auto 0; text-align: left; }
+  .rsvp-card .code-entry input { text-transform: uppercase; letter-spacing: 0.3em; text-align: center; font-size: 1.15rem; }
+  @media (max-width: 540px) { form.rsvp, .rsvp-card { padding: 1.75rem 1.15rem; } }
   fieldset { border: none; margin-bottom: 2.25rem; }
   legend {
     font-family: var(--serif); font-size: 1.35rem; color: var(--sage-dark);
@@ -152,6 +160,7 @@
   }
   .choice-pills input:checked + label { background: var(--sage-dark); border-color: var(--sage-dark); color: #fff; }
   .choice-pills input:focus-visible + label { outline: 2px solid var(--sage); outline-offset: 2px; }
+  .choice-pills.compact label { padding: 0.4rem 1.1rem; font-size: 0.88rem; }
 
   .guest-card {
     border: 1px dashed var(--line); border-radius: 6px;
@@ -178,6 +187,12 @@
   .form-status.ok { display: block; background: #edf3ea; border: 1px solid var(--sage); color: var(--sage-dark); }
   .form-status.err { display: block; background: #f9ecec; border: 1px solid #cf8b8b; color: #8c4a4a; }
 
+  .household-intro {
+    background: var(--blush); border-radius: 6px; padding: 1.25rem 1.5rem; margin-bottom: 2rem;
+    font-size: 0.98rem;
+  }
+  .household-intro strong { font-weight: 500; font-family: var(--serif); font-size: 1.15rem; color: var(--sage-dark); }
+
   .sent-card {
     display: none; text-align: center; background: #fff; border: 1px solid var(--line);
     border-radius: 8px; padding: 3.5rem 2rem;
@@ -199,9 +214,9 @@
   <div class="inner">
     <a class="monogram" href="#top" id="nav-monogram">C &amp; L</a>
     <ul>
-      <li class="hide-sm"><a href="#day">The Day</a></li>
-      <li class="hide-sm"><a href="#venue">Venue</a></li>
-      <li><a href="#menu">Menu</a></li>
+      <li class="hide-sm" id="nav-day"><a href="#day">The Day</a></li>
+      <li class="hide-sm" id="nav-venue"><a href="#venue">Venue</a></li>
+      <li id="nav-menu"><a href="#menu">Menu</a></li>
       <li><a class="cta" href="#rsvp">RSVP</a></li>
     </ul>
   </div>
@@ -213,6 +228,7 @@
   <div class="divider"></div>
   <p class="date" id="hero-date">Date to be announced</p>
   <p class="place" id="hero-place"></p>
+  <p class="invite-hello" id="invite-hello" style="display:none"></p>
   <a class="btn solid" href="#rsvp" id="hero-cta">RSVP</a>
 </header>
 
@@ -254,7 +270,27 @@
     <h2>RSVP</h2>
   </div>
 
-  <form class="rsvp" id="rsvp-form" novalidate>
+  <!-- RSVP closed -->
+  <div class="rsvp-card" id="rsvp-closed" style="display:none">
+    <h3>Not just yet…</h3>
+    <p id="rsvp-closed-msg">RSVPs aren't open yet — check back soon!</p>
+  </div>
+
+  <!-- Invite code entry -->
+  <div class="rsvp-card" id="rsvp-code" style="display:none">
+    <h3>Found your invitation?</h3>
+    <p>Enter the code from your invite (or use the personal link we sent you) and we'll bring up your whole party.</p>
+    <div class="code-entry">
+      <div class="form-status err" id="code-error" style="margin:0 0 1rem"></div>
+      <label for="invite-code-input">Invite code</label>
+      <input type="text" id="invite-code-input" autocomplete="off" spellcheck="false" maxlength="12" placeholder="ABC123">
+      <button class="btn solid" id="invite-code-btn" style="width:100%">Find my invitation</button>
+    </div>
+  </div>
+
+  <form class="rsvp" id="rsvp-form" novalidate style="display:none">
+    <div class="household-intro" id="household-intro" style="display:none"></div>
+
     <fieldset>
       <legend>Your details</legend>
       <div class="row">
@@ -271,7 +307,7 @@
       <input type="tel" id="contact-phone" name="contact_phone" autocomplete="tel">
     </fieldset>
 
-    <fieldset>
+    <fieldset id="attend-fieldset">
       <legend>Will you be joining us?</legend>
       <div class="choice-pills" role="radiogroup" aria-label="Attending">
         <input type="radio" id="attend-yes" name="attending" value="yes" checked>
@@ -286,8 +322,8 @@
     </fieldset>
 
     <fieldset id="guests-fieldset">
-      <legend>Menu choices &amp; allergies</legend>
-      <p style="font-size:0.9rem; color:var(--ink-soft); margin-bottom:1.25rem;">
+      <legend id="guests-legend">Menu choices &amp; allergies</legend>
+      <p style="font-size:0.9rem; color:var(--ink-soft); margin-bottom:1.25rem;" id="guests-hint">
         Please complete one section per guest so the kitchen knows exactly who is eating what.
       </p>
       <div id="guest-cards"></div>
@@ -308,8 +344,8 @@
   <div class="sent-card" id="sent-card">
     <h3>Thank you! 💛</h3>
     <p>Your RSVP is safely with us — we can't wait to celebrate with you.<br>
-       Need to change anything? Just submit again or drop us an email and we'll use your latest answer.</p>
-    <p style="margin-top:1.5rem"><a class="btn" href="#" id="rsvp-again">Submit another RSVP</a></p>
+       Need to change anything? Just submit again and we'll use your latest answer.</p>
+    <p style="margin-top:1.5rem"><a class="btn" href="#" id="rsvp-again">Change my answers</a></p>
   </div>
 </section>
 
@@ -322,11 +358,17 @@
 <script src="config.js"></script>
 <script>
 /* ============================================================
-   Content loads live from the couple's dashboard database
-   (Supabase) — edits made at /admin/ appear here on refresh.
-   If the database isn't configured or is unreachable, the site
-   falls back to the DEFAULTS below and RSVP submissions fall
-   back to a pre-filled email.
+   Content, visibility rules and the guest list all load live
+   from the couple's dashboard database (Supabase).
+
+   - A personal invite link (?inv=CODE) identifies a household:
+     the form lists that family's names so one person can reply
+     for everyone, and content is tailored to their invitation
+     (full day vs evening).
+   - What's visible, and whether/for whom the RSVP is open, is
+     controlled from /admin/ → Publishing.
+   - Without a database configured the site falls back to the
+     DEFAULTS below with an email-based RSVP.
    ============================================================ */
 const CFG = window.WEDDING_CONFIG || {};
 const DB = CFG.SUPABASE_URL && CFG.SUPABASE_ANON_KEY
@@ -350,6 +392,8 @@ const DEFAULTS = {
     { time: "7:30pm", title: "Evening Party", desc: "First dance, music and dancing into the night." },
   ],
   menu_footnote: "Children's menu and any adapted dishes are no trouble at all — just tell us about allergies and dietary requirements when you RSVP and our caterers will take care of it.",
+  visibility: { schedule: "everyone", venue: "everyone", menu: "everyone" },
+  rsvp: { mode: "open", open: true, audience: "everyone", closed_message: "" },
 };
 
 const DEFAULT_MENU = [
@@ -364,11 +408,15 @@ const DEFAULT_MENU = [
   { course: "dessert", label: "Dark chocolate & salted caramel torte", note: "vegan, gluten free" },
 ];
 
-const COURSES = [["starter", "Starters"], ["main", "Mains"], ["dessert", "Desserts"]];
+const COURSES = [["starter", "Starter"], ["main", "Main"], ["dessert", "Dessert"]];
 const COMMON_ALLERGENS = ["Gluten", "Dairy", "Eggs", "Nuts", "Peanuts", "Shellfish", "Fish", "Soya", "Sesame"];
 
-let SETTINGS = { ...DEFAULTS };
+let SETTINGS = JSON.parse(JSON.stringify(DEFAULTS));
 let MENU = [...DEFAULT_MENU];
+let HOUSEHOLD = null; // { id, name, audience, guests: [{id, name, sort}], responded }
+
+const $ = id => document.getElementById(id);
+const esc = s => String(s ?? "").replace(/[&<>"']/g, c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]));
 
 /* ---------- Data access ---------- */
 async function dbFetch(path) {
@@ -391,29 +439,75 @@ async function dbInsert(table, rows) {
   if (!res.ok) throw new Error(`db insert ${table} ${res.status}`);
 }
 
+async function dbRpc(name, args) {
+  const res = await fetch(`${DB.url}/rest/v1/rpc/${name}`, {
+    method: "POST",
+    headers: {
+      apikey: DB.key, Authorization: `Bearer ${DB.key}`,
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify(args),
+  });
+  if (!res.ok) throw new Error(`rpc ${name} ${res.status}`);
+  return res.json();
+}
+
+function inviteCodeFromUrl() {
+  const params = new URLSearchParams(location.search);
+  return (params.get("inv") || params.get("code") || "").trim();
+}
+
+async function loadHousehold(code) {
+  const result = await dbRpc("household_by_code", { invite_code: code });
+  if (result && result.id) {
+    HOUSEHOLD = result;
+    HOUSEHOLD.guests = (HOUSEHOLD.guests || []).sort((a, b) => (a.sort || 0) - (b.sort || 0));
+    const url = new URL(location.href);
+    url.searchParams.set("inv", code.toUpperCase());
+    history.replaceState(null, "", url.toString());
+    return true;
+  }
+  return false;
+}
+
 async function loadContent() {
   if (!DB) return;
+  const code = inviteCodeFromUrl();
   try {
-    const [settingsRows, menuRows] = await Promise.all([
+    const jobs = [
       dbFetch("settings?id=eq.1&select=data"),
       dbFetch("menu_items?active=is.true&select=course,label,note&order=course.asc,sort.asc"),
-    ]);
+      code ? loadHousehold(code).catch(() => false) : Promise.resolve(false),
+    ];
+    const [settingsRows, menuRows, hhFound] = await Promise.all(jobs);
     if (settingsRows[0] && settingsRows[0].data) {
       const d = settingsRows[0].data;
-      SETTINGS = { ...DEFAULTS, ...d, venue: { ...DEFAULTS.venue, ...(d.venue || {}) } };
+      SETTINGS = {
+        ...DEFAULTS, ...d,
+        venue: { ...DEFAULTS.venue, ...(d.venue || {}) },
+        visibility: { ...DEFAULTS.visibility, ...(d.visibility || {}) },
+        rsvp: { ...DEFAULTS.rsvp, ...(d.rsvp || {}) },
+      };
       if (!Array.isArray(SETTINGS.schedule) || !SETTINGS.schedule.length) SETTINGS.schedule = DEFAULTS.schedule;
     }
     if (menuRows.length) MENU = menuRows;
+    if (code && !hhFound) window.__badCode = code;
     render();
   } catch (e) {
     /* fall back to defaults silently — the site must still work */
   }
 }
 
-/* ---------- Rendering ---------- */
-const $ = id => document.getElementById(id);
-const esc = s => String(s ?? "").replace(/[&<>"']/g, c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]));
+/* ---------- Visibility ---------- */
+function audience() { return HOUSEHOLD ? HOUSEHOLD.audience : "public"; }
+function canSee(vis) { return vis === "everyone" || vis === audience(); }
+function rsvpAllowed() {
+  const r = SETTINGS.rsvp;
+  return !!r.open && (r.audience === "everyone" || r.audience === audience());
+}
+function menuInForm() { return canSee(SETTINGS.visibility.menu) && MENU.length > 0; }
 
+/* ---------- Rendering ---------- */
 function coupleHtml(name) {
   const parts = String(name).split("&");
   return parts.length === 2
@@ -432,6 +526,20 @@ function render() {
   $("hero-place").textContent = s.place_line;
   $("hero-cta").textContent = s.deadline_display ? `RSVP by ${s.deadline_display}` : "RSVP";
   $("rsvp-eyebrow").textContent = s.deadline_display ? `Kindly reply by ${s.deadline_display}` : "Kindly reply";
+
+  const hello = $("invite-hello");
+  if (HOUSEHOLD) {
+    hello.textContent = `With love to ${HOUSEHOLD.name}`;
+    hello.style.display = "";
+  } else hello.style.display = "none";
+
+  // Section visibility
+  const sections = [["schedule", "day", "nav-day"], ["venue", "venue", "nav-venue"], ["menu", "menu", "nav-menu"]];
+  sections.forEach(([key, sectionId, navId]) => {
+    const visible = canSee(s.visibility[key]);
+    $(sectionId).style.display = visible ? "" : "none";
+    $(navId).style.display = visible ? "" : "none";
+  });
 
   $("schedule-cards").innerHTML = (s.schedule || []).map(item => `
     <div class="card">
@@ -453,7 +561,7 @@ function render() {
     const dishes = MENU.filter(m => m.course === course);
     if (!dishes.length) return "";
     return `<div class="card">
-      <h3>${title}</h3>
+      <h3>${title}s</h3>
       ${dishes.map(d => `<p class="dish">${esc(d.label)}${d.note ? `<em>${esc(d.note)}</em>` : ""}</p>`).join("")}
     </div>`;
   }).join("");
@@ -465,17 +573,71 @@ function render() {
   emailLink.href = `mailto:${email}`;
   $("footer-line").textContent = [s.date_display, s.venue.name].filter(v => v && !/to be announced/i.test(v)).join(" · ");
 
-  const sizeSel = $("party-size");
-  const prev = Number(sizeSel.value || 1);
-  const max = Number(s.max_party) || 6;
-  sizeSel.innerHTML = Array.from({ length: max }, (_, i) => `<option value="${i + 1}">${i + 1}</option>`).join("");
-  sizeSel.value = String(Math.min(prev, max));
-  renderGuestCards(Number(sizeSel.value));
+  renderRsvpArea();
 }
 
-/* ---------- RSVP form ---------- */
+/* ---------- RSVP area ---------- */
 const form = $("rsvp-form");
 
+function renderRsvpArea() {
+  const showEl = (id, show) => { $(id).style.display = show ? "" : "none"; };
+  showEl("rsvp-closed", false);
+  showEl("rsvp-code", false);
+  form.style.display = "none";
+  $("sent-card").style.display = "none";
+
+  if (!rsvpAllowed()) {
+    const msg = SETTINGS.rsvp.closed_message ||
+      (SETTINGS.rsvp.open ? "RSVPs for this part of the day aren't open to your invitation — check your invite for details." : "RSVPs aren't open yet — check back soon!");
+    $("rsvp-closed-msg").textContent = msg;
+    showEl("rsvp-closed", true);
+    return;
+  }
+
+  if (HOUSEHOLD) {
+    renderHouseholdForm();
+    form.style.display = "";
+    return;
+  }
+
+  if (SETTINGS.rsvp.mode === "code" && DB) {
+    if (window.__badCode) {
+      $("code-error").textContent = "Hmm, we couldn't find that code — do double-check it against your invitation, or get in touch.";
+      $("code-error").style.display = "block";
+      window.__badCode = null;
+    }
+    showEl("rsvp-code", true);
+    return;
+  }
+
+  renderOpenForm();
+  form.style.display = "";
+}
+
+$("invite-code-btn").addEventListener("click", async () => {
+  const code = $("invite-code-input").value.trim();
+  $("code-error").style.display = "none";
+  if (!code) return;
+  $("invite-code-btn").disabled = true;
+  try {
+    const ok = await loadHousehold(code);
+    if (ok) render();
+    else {
+      $("code-error").textContent = "Hmm, we couldn't find that code — do double-check it against your invitation, or get in touch.";
+      $("code-error").style.display = "block";
+    }
+  } catch (e) {
+    $("code-error").textContent = "Something went wrong looking that up — please try again.";
+    $("code-error").style.display = "block";
+  } finally {
+    $("invite-code-btn").disabled = false;
+  }
+});
+$("invite-code-input").addEventListener("keydown", e => {
+  if (e.key === "Enter") { e.preventDefault(); $("invite-code-btn").click(); }
+});
+
+/* ----- shared form pieces ----- */
 function menuGroup(guestIdx, course, title) {
   const dishes = MENU.filter(m => m.course === course);
   if (!dishes.length) return "";
@@ -495,7 +657,72 @@ function allergenChecks(guestIdx) {
     </div>`).join("");
 }
 
-function renderGuestCards(count) {
+function allergyBoxHtml(i) {
+  return `<div class="allergy-box">
+    <p><strong>Allergies &amp; dietary requirements</strong> — tick any that apply and add detail below (e.g. severity, coeliac, halal, pregnancy).</p>
+    <div class="allergy-checks">${allergenChecks(i)}</div>
+    <label for="g${i}-allergy-notes" style="text-transform:none; letter-spacing:0;">Other allergies / dietary notes</label>
+    <textarea id="g${i}-allergy-notes" name="guest${i}_allergy_notes" rows="2" placeholder="e.g. severe peanut allergy (carries EpiPen), no alcohol in food"></textarea>
+  </div>`;
+}
+
+/* ----- household (invite link) form ----- */
+function renderHouseholdForm() {
+  $("attend-fieldset").style.display = "none";
+  $("extras-fieldset").style.display = "";
+  $("guests-fieldset").style.display = "";
+  $("guests-legend").textContent = menuInForm() ? "Who's coming, menu choices & allergies" : "Who's coming & any allergies";
+  $("guests-hint").textContent = "Let us know for each member of your party — one person can answer for everyone.";
+
+  const intro = $("household-intro");
+  intro.style.display = "";
+  intro.innerHTML = `<strong>${esc(HOUSEHOLD.name)}</strong><br>
+    We've reserved ${HOUSEHOLD.guests.length === 1 ? "a seat" : `${HOUSEHOLD.guests.length} seats`} for your party.
+    ${HOUSEHOLD.responded ? "<br>💛 We already have a reply from you — submitting again simply updates it (we count your latest answer)." : ""}`;
+
+  const holder = $("guest-cards");
+  holder.innerHTML = "";
+  HOUSEHOLD.guests.forEach((g, idx) => {
+    const i = idx + 1;
+    const card = document.createElement("div");
+    card.className = "guest-card";
+    card.innerHTML = `
+      <h3>${esc(g.name)}</h3>
+      <input type="hidden" name="guest${i}_name" value="${esc(g.name)}">
+      <div class="choice-pills compact" role="radiogroup" aria-label="${esc(g.name)} attending">
+        <input type="radio" id="g${i}-att-y" name="guest${i}_attending" value="yes" checked>
+        <label for="g${i}-att-y">Will be there 🎉</label>
+        <input type="radio" id="g${i}-att-n" name="guest${i}_attending" value="no">
+        <label for="g${i}-att-n">Sadly can't</label>
+      </div>
+      <div id="g${i}-extra">
+        ${menuInForm() ? COURSES.map(([course, title]) => menuGroup(i, course, title)).join("") : ""}
+        ${allergyBoxHtml(i)}
+      </div>`;
+    holder.appendChild(card);
+    card.querySelectorAll(`input[name="guest${i}_attending"]`).forEach(el =>
+      el.addEventListener("change", () => {
+        card.querySelector(`#g${i}-extra`).style.display = el.value === "yes" && el.checked ? "" : "none";
+      }));
+  });
+}
+
+/* ----- open (no guest list) form ----- */
+function renderOpenForm() {
+  $("attend-fieldset").style.display = "";
+  $("household-intro").style.display = "none";
+  $("guests-legend").textContent = menuInForm() ? "Menu choices & allergies" : "Your party & any allergies";
+  $("guests-hint").textContent = "Please complete one section per guest so the kitchen knows exactly who is eating what.";
+
+  const sizeSel = $("party-size");
+  const prev = Number(sizeSel.value || 1);
+  const max = Number(SETTINGS.max_party) || 6;
+  sizeSel.innerHTML = Array.from({ length: max }, (_, i) => `<option value="${i + 1}">${i + 1}</option>`).join("");
+  sizeSel.value = String(Math.min(prev, max));
+  renderOpenGuestCards(Number(sizeSel.value));
+}
+
+function renderOpenGuestCards(count) {
   const holder = $("guest-cards");
   const existingNames = [...holder.querySelectorAll('input[type="text"]')].map(el => el.value);
   holder.innerHTML = "";
@@ -506,13 +733,8 @@ function renderGuestCards(count) {
       <h3>Guest ${i} <span class="tag">${i === 1 ? "that's you" : ""}</span></h3>
       <label for="g${i}-name">Full name *</label>
       <input type="text" id="g${i}-name" name="guest${i}_name" required value="${esc(existingNames[i - 1] || "")}">
-      ${COURSES.map(([course]) => menuGroup(i, course, course.charAt(0).toUpperCase() + course.slice(1))).join("")}
-      <div class="allergy-box">
-        <p><strong>Allergies &amp; dietary requirements</strong> — tick any that apply and add detail below (e.g. severity, coeliac, halal, pregnancy).</p>
-        <div class="allergy-checks">${allergenChecks(i)}</div>
-        <label for="g${i}-allergy-notes" style="text-transform:none; letter-spacing:0;">Other allergies / dietary notes</label>
-        <textarea id="g${i}-allergy-notes" name="guest${i}_allergy_notes" rows="2" placeholder="e.g. severe peanut allergy (carries EpiPen), no alcohol in food"></textarea>
-      </div>`;
+      ${menuInForm() ? COURSES.map(([course, title]) => menuGroup(i, course, title)).join("") : ""}
+      ${allergyBoxHtml(i)}`;
     holder.appendChild(card);
   }
   const contactName = $("contact-name");
@@ -521,17 +743,18 @@ function renderGuestCards(count) {
   updateAttendingUI();
 }
 
-function isAttending() { return $("attend-yes").checked; }
+function isAttending() { return HOUSEHOLD ? true : $("attend-yes").checked; }
 
 function updateAttendingUI() {
-  const show = isAttending();
+  if (HOUSEHOLD) return;
+  const show = $("attend-yes").checked;
   $("guests-fieldset").style.display = show ? "" : "none";
   $("extras-fieldset").style.display = show ? "" : "none";
   $("party-size-wrap").style.display = show ? "" : "none";
   $("guest-cards").querySelectorAll("input, textarea").forEach(el => (el.disabled = !show));
 }
 
-$("party-size").addEventListener("change", () => renderGuestCards(Number($("party-size").value)));
+$("party-size").addEventListener("change", () => renderOpenGuestCards(Number($("party-size").value)));
 document.querySelectorAll('input[name="attending"]').forEach(el => el.addEventListener("change", updateAttendingUI));
 $("contact-name").addEventListener("blur", () => {
   const g1 = $("g1-name");
@@ -540,8 +763,6 @@ $("contact-name").addEventListener("blur", () => {
 $("rsvp-again").addEventListener("click", (e) => {
   e.preventDefault();
   form.reset();
-  $("sent-card").style.display = "none";
-  form.style.display = "";
   render();
   form.scrollIntoView({ behavior: "smooth" });
 });
@@ -554,37 +775,45 @@ function newUuid() {
   });
 }
 
+function guestAttending(i) {
+  if (!HOUSEHOLD) return true;
+  const el = form.querySelector(`input[name="guest${i}_attending"]:checked`);
+  return !el || el.value === "yes";
+}
+
 function collectRsvp() {
-  const attending = isAttending();
   const rsvpId = newUuid();
+  const count = HOUSEHOLD ? HOUSEHOLD.guests.length : (isAttending() ? Number($("party-size").value) : 0);
+  const guests = [];
+  for (let i = 1; i <= count; i++) {
+    const att = guestAttending(i);
+    const allergens = att ? [...form.querySelectorAll(`input[name="guest${i}_allergens"]:checked`)].map(el => el.value) : [];
+    const pick = course => att ? ((form.querySelector(`input[name="guest${i}_${course}"]:checked`) || {}).value || "") : "";
+    guests.push({
+      rsvp_id: rsvpId,
+      sort: i,
+      name: (form[`guest${i}_name`].value || "").trim(),
+      attending: att,
+      starter: pick("starter"),
+      main: pick("main"),
+      dessert: pick("dessert"),
+      allergens: allergens.join(", "),
+      allergy_notes: att ? (form[`guest${i}_allergy_notes`]?.value || "").trim() : "",
+    });
+  }
+  const anyAttending = HOUSEHOLD ? guests.some(g => g.attending) : isAttending();
   const rsvp = {
     id: rsvpId,
+    household_id: HOUSEHOLD ? HOUSEHOLD.id : null,
     contact_name: form.contact_name.value.trim(),
     contact_email: form.contact_email.value.trim(),
     contact_phone: form.contact_phone.value.trim(),
-    attending,
-    party_size: attending ? Number($("party-size").value) : 0,
-    song: attending ? form.song.value.trim() : "",
-    message: attending ? form.message.value.trim() : "",
+    attending: anyAttending,
+    party_size: guests.filter(g => g.attending).length,
+    song: anyAttending ? form.song.value.trim() : "",
+    message: form.message.value.trim(),
   };
-  const guests = [];
-  if (attending) {
-    for (let i = 1; i <= rsvp.party_size; i++) {
-      const allergens = [...form.querySelectorAll(`input[name="guest${i}_allergens"]:checked`)].map(el => el.value);
-      const pick = course => (form.querySelector(`input[name="guest${i}_${course}"]:checked`) || {}).value || "";
-      guests.push({
-        rsvp_id: rsvpId,
-        sort: i,
-        name: form[`guest${i}_name`].value.trim(),
-        starter: pick("starter"),
-        main: pick("main"),
-        dessert: pick("dessert"),
-        allergens: allergens.join(", "),
-        allergy_notes: form[`guest${i}_allergy_notes`].value.trim(),
-      });
-    }
-  }
-  return { rsvp, guests };
+  return { rsvp, guests: anyAttending || HOUSEHOLD ? guests : [] };
 }
 
 function validate() {
@@ -592,16 +821,17 @@ function validate() {
     showStatus("err", "Please fill in your name and a valid email address.");
     return false;
   }
-  if (isAttending()) {
-    const count = Number($("party-size").value);
-    for (let i = 1; i <= count; i++) {
-      if (!form[`guest${i}_name`].value.trim()) {
-        showStatus("err", `Please add a name for guest ${i}.`);
-        return false;
-      }
+  const count = HOUSEHOLD ? HOUSEHOLD.guests.length : (isAttending() ? Number($("party-size").value) : 0);
+  for (let i = 1; i <= count; i++) {
+    const name = (form[`guest${i}_name`].value || "").trim();
+    if (!name) {
+      showStatus("err", `Please add a name for guest ${i}.`);
+      return false;
+    }
+    if (guestAttending(i) && menuInForm()) {
       for (const [course] of COURSES) {
         if (MENU.some(m => m.course === course) && !form.querySelector(`input[name="guest${i}_${course}"]:checked`)) {
-          showStatus("err", `Please choose a ${course} for guest ${i}.`);
+          showStatus("err", `Please choose a ${course} for ${HOUSEHOLD ? name : "guest " + i}.`);
           return false;
         }
       }
@@ -622,21 +852,23 @@ function toEmailBody({ rsvp, guests }) {
     `RSVP from ${rsvp.contact_name}`,
     `Email: ${rsvp.contact_email}`,
     rsvp.contact_phone ? `Phone: ${rsvp.contact_phone}` : "",
-    `Attending: ${rsvp.attending ? "Joyfully accepts" : "Regretfully declines"}`,
+    `Attending: ${rsvp.attending ? "Yes" : "No"}`,
     "",
   ];
   guests.forEach((g, i) => {
     lines.push(
-      `--- Guest ${i + 1}: ${g.name} ---`,
-      `Starter: ${g.starter}`, `Main: ${g.main}`, `Dessert: ${g.dessert}`,
-      `Allergens: ${g.allergens || "none ticked"}`,
-      g.allergy_notes ? `Allergy notes: ${g.allergy_notes}` : "Allergy notes: none",
+      `--- Guest ${i + 1}: ${g.name} — ${g.attending ? "attending" : "NOT attending"} ---`,
+      g.attending ? `Starter: ${g.starter}` : "",
+      g.attending ? `Main: ${g.main}` : "",
+      g.attending ? `Dessert: ${g.dessert}` : "",
+      g.attending ? `Allergens: ${g.allergens || "none ticked"}` : "",
+      g.attending && g.allergy_notes ? `Allergy notes: ${g.allergy_notes}` : "",
       ""
     );
   });
   if (rsvp.song) lines.push(`Song request: ${rsvp.song}`);
   if (rsvp.message) lines.push(`Message: ${rsvp.message}`);
-  return lines.join("\n");
+  return lines.filter(l => l !== "").join("\n");
 }
 
 form.addEventListener("submit", async (e) => {

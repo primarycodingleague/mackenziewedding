@@ -1,7 +1,8 @@
 -- =============================================================
 -- Wedding site database schema + security policies.
 -- Run this once in the Supabase SQL Editor (paste + Run).
--- Safe to re-run: uses IF NOT EXISTS / OR REPLACE where possible.
+-- Idempotent: safe to re-run, including over the earlier version
+-- of this schema.
 -- =============================================================
 
 -- ---------- Tables ----------
@@ -19,6 +20,24 @@ create table if not exists public.menu_items (
   note   text not null default '',
   sort   int  not null default 0,
   active boolean not null default true
+);
+
+-- Households: one invite (and one link/code) per family or party.
+create table if not exists public.households (
+  id         uuid primary key default gen_random_uuid(),
+  code       text not null unique,
+  name       text not null,
+  audience   text not null default 'day' check (audience in ('day', 'evening')),
+  notes      text not null default '',
+  created_at timestamptz not null default now()
+);
+
+-- The named people in each household.
+create table if not exists public.household_guests (
+  id           uuid primary key default gen_random_uuid(),
+  household_id uuid not null references public.households(id) on delete cascade,
+  name         text not null,
+  sort         int not null default 0
 );
 
 create table if not exists public.rsvps (
@@ -45,8 +64,13 @@ create table if not exists public.rsvp_guests (
   allergy_notes text not null default ''
 );
 
--- Seed the single settings row (guest site supplies defaults for
--- any keys missing from this blob, so empty is fine to start).
+-- Columns added after the first release (no-ops on a fresh install).
+alter table public.rsvps
+  add column if not exists household_id uuid references public.households(id) on delete set null;
+alter table public.rsvp_guests
+  add column if not exists attending boolean not null default true;
+
+-- Seed the single settings row.
 insert into public.settings (id, data) values (1, '{}'::jsonb)
 on conflict (id) do nothing;
 
@@ -65,20 +89,52 @@ select * from (values
 ) as seed(course, label, note, sort)
 where not exists (select 1 from public.menu_items);
 
+-- ---------- Invite-code lookup ----------
+-- Guests never get direct read access to the guest list. Instead
+-- this function returns exactly one household for an exact code —
+-- so a valid code unlocks that family's names and nothing else.
+create or replace function public.household_by_code(invite_code text)
+returns jsonb
+language sql
+security definer
+set search_path = public
+stable
+as $$
+  select jsonb_build_object(
+    'id', h.id,
+    'name', h.name,
+    'audience', h.audience,
+    'guests', coalesce(
+      (select jsonb_agg(jsonb_build_object('id', g.id, 'name', g.name, 'sort', g.sort) order by g.sort)
+       from household_guests g where g.household_id = h.id),
+      '[]'::jsonb),
+    'responded', exists (select 1 from rsvps r where r.household_id = h.id)
+  )
+  from households h
+  where upper(h.code) = upper(trim(invite_code))
+$$;
+
+revoke all on function public.household_by_code(text) from public;
+grant execute on function public.household_by_code(text) to anon, authenticated;
+
 -- ---------- Row-level security ----------
 -- Guests (anon key): may READ site content, and INSERT an RSVP.
--- They can never read, change, or delete anyone's responses.
--- Signed-in users (you two): full access.
+-- They can never read, change, or delete responses or the guest
+-- list. Signed-in users (you two): full access.
 
-alter table public.settings    enable row level security;
-alter table public.menu_items  enable row level security;
-alter table public.rsvps       enable row level security;
-alter table public.rsvp_guests enable row level security;
+alter table public.settings         enable row level security;
+alter table public.menu_items       enable row level security;
+alter table public.households       enable row level security;
+alter table public.household_guests enable row level security;
+alter table public.rsvps            enable row level security;
+alter table public.rsvp_guests      enable row level security;
 
 drop policy if exists "public read settings"  on public.settings;
 drop policy if exists "admin write settings"  on public.settings;
 drop policy if exists "public read menu"      on public.menu_items;
 drop policy if exists "admin write menu"      on public.menu_items;
+drop policy if exists "admin manage households" on public.households;
+drop policy if exists "admin manage household guests" on public.household_guests;
 drop policy if exists "public submit rsvp"    on public.rsvps;
 drop policy if exists "admin manage rsvps"    on public.rsvps;
 drop policy if exists "admin update rsvps"    on public.rsvps;
@@ -96,6 +152,12 @@ create policy "admin write settings" on public.settings
 create policy "public read menu" on public.menu_items
   for select to anon, authenticated using (true);
 create policy "admin write menu" on public.menu_items
+  for all to authenticated using (true) with check (true);
+
+-- Guest list: admin only (guests reach it via household_by_code).
+create policy "admin manage households" on public.households
+  for all to authenticated using (true) with check (true);
+create policy "admin manage household guests" on public.household_guests
   for all to authenticated using (true) with check (true);
 
 create policy "public submit rsvp" on public.rsvps

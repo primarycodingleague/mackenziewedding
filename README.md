@@ -4,11 +4,19 @@ Two-sided wedding site served by GitHub Pages at
 [mackenziewedding.co.uk](https://mackenziewedding.co.uk).
 
 **Guest side** (`/`): the invitation — order of the day, venue, menu, and an
-RSVP form with per-guest menu choices and allergy declarations.
+RSVP form. Each household gets a personal invite link (`/?inv=CODE`) that
+brings up their family's names so one person replies for everyone, with
+per-guest attendance, menu choices and allergy declarations. What a guest
+sees depends on their invitation (full day vs evening) and the publishing
+settings.
 
-**Couple side** (`/admin/`): a login-protected dashboard showing every RSVP
-as it arrives — headcounts, per-dish tallies for the caterers, an allergy
-report, CSV export — plus editors for the menu and all guest-facing content.
+**Couple side** (`/admin/`): a login-protected dashboard —
+- every RSVP as it arrives, headcounts, per-dish tallies, allergy report, CSV export
+- guest list manager: households, named family members, invite links (copy
+  per family or download all as CSV), replied/awaiting status
+- menu editor and site-content editor
+- publishing controls: open/close RSVP (and for whom), invite-only vs open
+  replies, and per-section visibility (everyone / full-day / evening / hidden)
 
 The two sides feed each other through a free [Supabase](https://supabase.com)
 database: guests' submissions appear on the dashboard instantly, and edits
