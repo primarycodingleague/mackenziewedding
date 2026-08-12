@@ -16,7 +16,7 @@
    dashboard shows setup instructions.
    ============================================================ */
 window.WEDDING_CONFIG = {
-  SUPABASE_URL: "",       // e.g. "https://abcdefgh.supabase.co"
-  SUPABASE_ANON_KEY: "",  // long "anon public" key
+  SUPABASE_URL: "https://ncgotwfpesrlnjrixdud.supabase.co",
+  SUPABASE_ANON_KEY: "sb_publishable_DEn_7u0GlcmHpnPpVODP7A_B_WJoSeI",
   RSVP_EMAIL: "charlie@primarycodingleague.co.uk", // fallback + contact
 };
